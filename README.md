@@ -9,3 +9,9 @@
 ```
 npm run setup-db
 ```
+
+2: The connection.js file creates a connection to the database stored in the .env file: 
+
+```
+PGDATABASE=airbnc_test
+```
