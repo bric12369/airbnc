@@ -7,8 +7,6 @@ async function seed() {
         property_type VARCHAR NOT NULL,
         description TEXT NOT NULL
         )`)
-    
-    console.log('property_types created')
 }
 
 module.exports = seed
