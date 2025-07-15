@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/bric12369/airbnc/issues"
   },
-  "homepage": "https://github.com/bric12369/airbnc#readme"
+  "homepage": "https://github.com/bric12369/airbnc#readme",
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "pg": "^8.16.3"
+  }
 }
