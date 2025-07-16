@@ -2,12 +2,13 @@ const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
 
-async function seed(propertyTypesData, usersData) {
+async function seed(propertyTypesData, usersData, propertiesData) {
+    await db.query(`DROP TABLE IF EXISTS properties`)
     await db.query(`DROP TABLE IF EXISTS property_types`)
     await db.query(`DROP TABLE IF EXISTS users`)
 
     await db.query(`CREATE TABLE property_types(
-        property_type VARCHAR NOT NULL,
+        property_type VARCHAR NOT NULL PRIMARY KEY,
         description TEXT NOT NULL
         )`)
 
@@ -38,6 +39,16 @@ async function seed(propertyTypesData, usersData) {
             formattedUsersData
         )
     )
+
+    await db.query(`CREATE TABLE properties(
+        property_id SERIAL PRIMARY KEY,
+        host_id INT REFERENCES users(user_id) NOT NULL,
+        name VARCHAR NOT NULL,
+        location VARCHAR NOT NULL,
+        property_type VARCHAR REFERENCES property_types(property_type) NOT NULL,
+        price_per_night DECIMAL NOT NULL,
+        description TEXT
+        )`)
 }
 
 module.exports = seed
