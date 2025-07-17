@@ -215,6 +215,53 @@ describe('replaceHostNamesWithIds', () => {
         const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
         expect(result[0]).not.toHaveProperty('host_name')
     })
+    test('does not mutate passed in users or properties data', () => {
+        const testUsersData = [
+            {
+                "first_name": "Alice",
+                "surname": "Johnson",
+                "email": "alice@example.com",
+                "phone_number": "+44 7000 111111",
+                "is_host": true,
+                "avatar": "https://example.com/images/alice.jpg"
+            }
+        ]
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+            }
+        ]
+        const testUsersDataCopy = [
+            {
+                "first_name": "Alice",
+                "surname": "Johnson",
+                "email": "alice@example.com",
+                "phone_number": "+44 7000 111111",
+                "is_host": true,
+                "avatar": "https://example.com/images/alice.jpg"
+            }
+        ]
+        const testPropertiesDataCopy = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+            }
+        ]
+        replaceHostNamesWithIds(testUsersData, testPropertiesData)
+        expect(testUsersData).toEqual(testUsersDataCopy)
+        expect(testPropertiesData).toEqual(testPropertiesDataCopy)
+    })
 })
 
 describe('sortKeysInPropertiesData', () => {
@@ -274,5 +321,32 @@ describe('sortKeysInPropertiesData', () => {
         }
         expect(Object.keys(result[3])).toEqual(Object.keys(expectedProperty))
         expect(result[3]).toEqual(expectedProperty)
+    })
+    test('does not mutate input', () => {
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+            }
+        ]
+        const testPropertiesDataCopy = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+            }
+        ]
+        const formatted = replaceHostNamesWithIds(usersData, testPropertiesData)
+        sortKeysInPropertiesData(formatted)
+        expect(testPropertiesData).toEqual(testPropertiesDataCopy)
     })
 })
