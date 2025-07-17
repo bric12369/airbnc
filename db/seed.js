@@ -1,6 +1,7 @@
 const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
+const { replaceHostNamesWithIds, sortKeysInPropertiesData } = require('./utils/format-properties-data')
 
 async function seed(propertyTypesData, usersData, propertiesData) {
     await db.query(`DROP TABLE IF EXISTS properties`)
@@ -49,6 +50,17 @@ async function seed(propertyTypesData, usersData, propertiesData) {
         price_per_night DECIMAL NOT NULL,
         description TEXT
         )`)
+
+    const propertiesWithHostIds = replaceHostNamesWithIds(usersData, propertiesData)
+    const sortedProperties = sortKeysInPropertiesData(propertiesWithHostIds)
+    const finalFormattedProperties = formatJson(sortedProperties)
+
+    await db.query(
+        pgFormat(
+            `INSERT INTO properties (host_id, name, location, property_type, price_per_night, description) VALUES %L`,
+            finalFormattedProperties
+        )
+    )
 }
 
 module.exports = seed
