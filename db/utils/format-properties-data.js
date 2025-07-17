@@ -1,10 +1,13 @@
 const formatPropertiesData = (users, properties) => {
     const formattedProperties = [...properties]
-    const user = users[0]
-    const username = user.first_name + ' ' + user.surname
-    const property = formattedProperties[0]
-    if (username === property.host_name) {
-        property.host_id = 1
+    const usernames = users.map((user) => {
+        return user.first_name + ' ' + user.surname
+    })
+    for (let i = 0; i < properties.length; i++) {
+        const property = properties[i]
+        if (usernames.includes(property.host_name)) {
+            property.host_id = usernames.indexOf(property.host_name) + 1
+        }
     }
     return formattedProperties
 }
