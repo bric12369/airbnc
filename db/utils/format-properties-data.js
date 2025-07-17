@@ -14,14 +14,15 @@ const replaceHostNamesWithIds = (users, properties) => {
 }
 
 const sortKeysInPropertiesData = (formattedProperties) => {
-    const ordered = []
-    const orderedProperty = {}
     const keyOrder = ['host_id', 'name', 'location', 'property_type', 'price_per_night', 'description', 'amenities']
-    for (const key of keyOrder) {
-        const value = formattedProperties[0][key]
-        orderedProperty[key] = value
-    }
-    ordered.push(orderedProperty)
+    const ordered = formattedProperties.map((property) => {
+        const orderedProperty = {}
+        for (const key of keyOrder) {
+            const value = property[key]
+            orderedProperty[key] = value
+        }
+        return orderedProperty
+    })
     return ordered
 }
 
