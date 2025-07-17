@@ -218,6 +218,22 @@ describe('replaceHostNamesWithIds', () => {
 })
 
 describe('sortKeysInPropertiesData', () => {
+    test('drops the amenities key of a formatted property', () => {
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+            }
+        ]
+        const formatted = replaceHostNamesWithIds(usersData, testPropertiesData)
+        const result = sortKeysInPropertiesData(formatted)
+        expect(result[0]).not.toHaveProperty('amenities')
+    })
     test('orders the keys of one formatted property to match the expected database format', () => {
         const testPropertiesData = [
             {
@@ -239,7 +255,6 @@ describe('sortKeysInPropertiesData', () => {
                 property_type: 'Apartment',
                 price_per_night: 120,
                 description: 'Description of Modern Apartment in City Center.',
-                amenities: ['WiFi', 'TV', 'Kitchen']
             }
         ]
         const result = sortKeysInPropertiesData(formatted)
@@ -255,8 +270,7 @@ describe('sortKeysInPropertiesData', () => {
             location: "Birmingham, UK",
             property_type: "Apartment",
             price_per_night: 110.0,
-            description: "Description of Elegant City Apartment.",
-            amenities: ["TV", "Kitchen", "Washer"]
+            description: "Description of Elegant City Apartment."
         }
         expect(Object.keys(result[3])).toEqual(Object.keys(expectedProperty))
         expect(result[3]).toEqual(expectedProperty)
