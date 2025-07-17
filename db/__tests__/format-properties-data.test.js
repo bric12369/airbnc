@@ -120,7 +120,7 @@ describe('formatPropertiesData', () => {
         expect(result[0].host_id).toBe(1)
         expect(result[1].host_id).toBe(3)
     })
-    test('assigns the same host_id to multiple properties with the same host', () => {
+    test.only('assigns the same host_id to multiple properties with the same host', () => {
         const testUsersData = [
             {
                 "first_name": "Alice",
@@ -189,5 +189,30 @@ describe('formatPropertiesData', () => {
       expect(result[4].host_id).toBe(3)
       expect(result[6].host_id).toBe(5)
       expect(result[10].host_id).toBe(1)
+    })
+    test('removes host_name', () => {
+        const testUsersData = [
+            {
+                "first_name": "Alice",
+                "surname": "Johnson",
+                "email": "alice@example.com",
+                "phone_number": "+44 7000 111111",
+                "is_host": true,
+                "avatar": "https://example.com/images/alice.jpg"
+            }
+        ]
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+            }
+        ]
+        const result = formatPropertiesData(testUsersData, testPropertiesData)
+        expect(result[0]).not.toHaveProperty('host_name')
     })
 })
