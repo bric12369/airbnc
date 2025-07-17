@@ -1,4 +1,4 @@
-const formatPropertiesData = (users, properties) => {
+const replaceHostNamesWithIds = (users, properties) => {
     const formattedProperties = [...properties]
     const usernames = users.map((user) => {
         return user.first_name + ' ' + user.surname
@@ -10,8 +10,19 @@ const formatPropertiesData = (users, properties) => {
             delete property.host_name
         }
     }
-    console.log(formattedProperties, '<<<<<<')
     return formattedProperties
 }
 
-module.exports = formatPropertiesData
+const sortKeysInPropertiesData = (formattedProperties) => {
+    const ordered = []
+    const orderedProperty = {}
+    const keyOrder = ['host_id', 'name', 'location', 'property_type', 'price_per_night', 'description', 'amenities']
+    for (const key of keyOrder) {
+        const value = formattedProperties[0][key]
+        orderedProperty[key] = value
+    }
+    ordered.push(orderedProperty)
+    return ordered
+}
+
+module.exports = { replaceHostNamesWithIds, sortKeysInPropertiesData }

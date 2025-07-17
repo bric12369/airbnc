@@ -1,7 +1,7 @@
-const formatPropertiesData = require('../utils/format-properties-data')
+const { replaceHostNamesWithIds, sortKeysInPropertiesData } = require('../utils/format-properties-data')
 const { usersData, propertiesData } = require('../data/test')
 
-describe('formatPropertiesData', () => {
+describe('replaceHostNamesWithIds', () => {
     test('takes an array of user JSON objects and an array of property JSON objects. When passed array of single user with is_host true and single property whose host_name matches user first and surname, assigns a host_id property', () => {
         const testUsersData = [
             {
@@ -24,7 +24,7 @@ describe('formatPropertiesData', () => {
                 "amenities": ["WiFi", "TV", "Kitchen"]
             }
         ]
-        const result = formatPropertiesData(testUsersData, testPropertiesData)
+        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
         expect(result[0]).toHaveProperty('host_id')
     })
     test('assigns host_id properties to all property objects when passed an array of multiple properties and an array of multiple users', () => {
@@ -66,7 +66,7 @@ describe('formatPropertiesData', () => {
                 "amenities": ["WiFi", "Parking", "Kitchen"]
             }
         ]
-        const result = formatPropertiesData(testUsersData, testPropertiesData)
+        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
         expect(result[1]).toHaveProperty('host_id')
     })
     test('handles users array where some users are not hosts. Skips these and assigns host id keys to properties accordingly and incrementally', () => {
@@ -116,11 +116,11 @@ describe('formatPropertiesData', () => {
                 "amenities": ["WiFi", "Parking", "Kitchen"]
             }
         ]
-        const result = formatPropertiesData(testUsersData, testPropertiesData)
+        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
         expect(result[0].host_id).toBe(1)
         expect(result[1].host_id).toBe(3)
     })
-    test.only('assigns the same host_id to multiple properties with the same host', () => {
+    test('assigns the same host_id to multiple properties with the same host', () => {
         const testUsersData = [
             {
                 "first_name": "Alice",
@@ -176,7 +176,7 @@ describe('formatPropertiesData', () => {
                 "amenities": ["WiFi"]
               }
         ]
-        const result = formatPropertiesData(testUsersData, testPropertiesData)
+        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
         expect(result[0].host_id).toBe(1)
         expect(result[1].host_id).toBe(1)
         expect(result[2].host_id).toBe(1)
@@ -184,7 +184,7 @@ describe('formatPropertiesData', () => {
     test('test cases', () => {
         const testUsersData = usersData 
         const testPropertiesData = propertiesData
-      const result = formatPropertiesData(testUsersData, testPropertiesData)
+      const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
       expect(result[3].host_id).toBe(3)
       expect(result[4].host_id).toBe(3)
       expect(result[6].host_id).toBe(5)
@@ -212,7 +212,37 @@ describe('formatPropertiesData', () => {
                 "amenities": ["WiFi", "TV", "Kitchen"]
             }
         ]
-        const result = formatPropertiesData(testUsersData, testPropertiesData)
+        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
         expect(result[0]).not.toHaveProperty('host_name')
+    })
+})
+
+describe('sortKeysInPropertiesData', () => {
+    test('orders the keys of one formatted property to match the expected database format', () => {
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+            }
+        ]
+        const formatted = replaceHostNamesWithIds(usersData, testPropertiesData)
+        const expected = [
+            {
+                host_id: 1,
+                name: 'Modern Apartment in City Center',
+                location: 'London, UK',
+                property_type: 'Apartment',
+                price_per_night: 120,
+                description: 'Description of Modern Apartment in City Center.',
+                amenities: [ 'WiFi', 'TV', 'Kitchen' ]
+            }
+        ]
+        const result = sortKeysInPropertiesData(formatted)
+        expect(Object.keys(result[0])).toEqual(Object.keys(expected[0]))
     })
 })
