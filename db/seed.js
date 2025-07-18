@@ -55,7 +55,8 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         )`)
 
     const propertiesWithHostIds = replaceHostNamesWithIds(usersData, propertiesData)
-    const sortedProperties = sortKeysInPropertiesData(propertiesWithHostIds)
+    const propertiesColumnOrder = ['host_id', 'name', 'location', 'property_type', 'price_per_night', 'description']
+    const sortedProperties = sortKeys(propertiesWithHostIds, propertiesColumnOrder)
     const finalFormattedProperties = formatJson(sortedProperties)
 
     await db.query(
