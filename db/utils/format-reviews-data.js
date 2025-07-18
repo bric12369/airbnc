@@ -1,16 +1,16 @@
-const replacePropertyNamesWithIds = (reviews, properties) => {
-    const reviewsWithPropertyIds = structuredClone(reviews)
+const replacePropertyNamesWithIds = (items, properties) => {
+    const itemsWithPropertyIds = structuredClone(items)
     const propertyNames = properties.map((property) => {
         return property.name
     })
-    for (let i = 0; i < reviewsWithPropertyIds.length; i++) {
-        const review = reviewsWithPropertyIds[i]
-        if (propertyNames.includes(review.property_name)) {
-            review.property_id = propertyNames.indexOf(review.property_name) + 1
-            delete review.property_name
+    for (let i = 0; i < itemsWithPropertyIds.length; i++) {
+        const item = itemsWithPropertyIds[i]
+        if (propertyNames.includes(item.property_name)) {
+            item.property_id = propertyNames.indexOf(item.property_name) + 1
+            delete item.property_name
         }
     }
-    return reviewsWithPropertyIds
+    return itemsWithPropertyIds
 }
 
 const replaceGuestNamesWithIds = (reviews, users) => {

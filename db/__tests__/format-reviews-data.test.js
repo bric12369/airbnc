@@ -1,6 +1,6 @@
 const formatReviews = require('../utils/format-reviews-data')
 const { replacePropertyNamesWithIds, replaceGuestNamesWithIds, replaceReviewNamesWithIds, sortKeysInReviewsData } = formatReviews
-const { reviewsData, propertiesData, usersData } = require('../data/test')
+const { reviewsData, propertiesData, usersData, imagesData } = require('../data/test')
 
 describe('replacePropertyNamesWithIds', () => {
     test('takes reviews and properties. When passed an array of single review and an array of property with matching name, replaces property_name in review with corresponding property_id', () => {
@@ -79,6 +79,13 @@ describe('replacePropertyNamesWithIds', () => {
         replacePropertyNamesWithIds(testReviewsData, testPropertiesData)
         expect(testReviewsData).toEqual(testReviewsDataCopy)
         expect(testPropertiesData).toEqual(testPropertiesDataCopy)
+    })
+    test('handles imagesData successfully and replaces property names with property ids', () => {
+        const result = replacePropertyNamesWithIds(imagesData, propertiesData)
+        result.forEach((image) => {
+            expect(image).not.toHaveProperty('property_name')
+            expect(image).toHaveProperty('property_id')
+        })
     })
 })
 
