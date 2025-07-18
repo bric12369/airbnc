@@ -5,6 +5,7 @@ const { replaceHostNamesWithIds } = require('./utils/format-properties-data')
 const { replaceReviewNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
 
 async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData) {
+    await db.query(`DROP TABLE IF EXISTS favourites`)
     await db.query(`DROP TABLE IF EXISTS images`)
     await db.query(`DROP TABLE IF EXISTS reviews`)
     await db.query(`DROP TABLE IF EXISTS properties`)
@@ -89,7 +90,7 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
 
     await db.query(`CREATE TABLE images(
         image_id SERIAL PRIMARY KEY,
-        property_id INT REFERENCES properties(property_id),
+        property_id INT REFERENCES properties(property_id) NOT NULL,
         image_url VARCHAR NOT NULL,
         alt_text VARCHAR NOT NULL
         )`)
@@ -105,7 +106,12 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
             finalFormattedImages
         )
     )
-    console.log('Success!')
+    
+    await db.query(`CREATE TABLE favourites(
+        favourite_id SERIAL PRIMARY KEY,
+        guest_id INT REFERENCES users(user_id) NOT NULL,
+        property_id INT REFERENCES properties(property_id) NOT NULL
+        )`)
 }
 
 module.exports = seed
