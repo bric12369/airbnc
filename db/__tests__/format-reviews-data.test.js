@@ -1,4 +1,5 @@
-const { replacePropertyNamesWithIds, replaceGuestNamesWithIds, sortKeysInReviewsData } = require('../utils/format-reviews-data')
+const formatReviews = require('../utils/format-reviews-data')
+const { replacePropertyNamesWithIds, replaceGuestNamesWithIds, replaceReviewNamesWithIds, sortKeysInReviewsData } = formatReviews
 const { reviewsData, propertiesData, usersData } = require('../data/test')
 
 describe('replacePropertyNamesWithIds', () => {
@@ -153,5 +154,20 @@ describe('replaceGuestNamesWithIds', () => {
         replaceGuestNamesWithIds(testReviewsData, testUsersData)
         expect(testReviewsData).toEqual(testReviewsDataCopy)
         expect(testUsersData).toEqual(testUsersDataCopy)
+    })
+})
+
+describe('replaceReviewNamesWithIds', () => {
+    test('removes guest and property names in reviews and replaces them with ids', () => {
+        const result = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
+        expect(result[0].property_id).toBe(3)
+        expect(result[0].guest_id).toBe(4)
+        for (let i = 0; i < result.length; i++) {
+            const currResult = result[i]
+            expect(currResult).not.toHaveProperty('property_name')
+            expect(currResult).not.toHaveProperty('guest_name')
+            expect(currResult).toHaveProperty('property_id')
+            expect(currResult).toHaveProperty('guest_id')
+        }
     })
 })

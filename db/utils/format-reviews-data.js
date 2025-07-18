@@ -28,8 +28,14 @@ const replaceGuestNamesWithIds = (reviews, users) => {
     return reviewsWithGuestIds
 }
 
+const replaceReviewNamesWithIds = (reviews, properties, users) => {
+    let updatedReviews = replacePropertyNamesWithIds(reviews, properties)
+    updatedReviews = replaceGuestNamesWithIds(updatedReviews, users)
+    return updatedReviews
+}
+
 const sortKeysInReviewsData = () => {
 
 }
 
-module.exports = { replacePropertyNamesWithIds, replaceGuestNamesWithIds, sortKeysInReviewsData }
+module.exports = { replacePropertyNamesWithIds, replaceGuestNamesWithIds, replaceReviewNamesWithIds, sortKeysInReviewsData }
