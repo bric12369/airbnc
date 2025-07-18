@@ -2,9 +2,9 @@ const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
 const { replaceHostNamesWithIds, sortKeysInPropertiesData } = require('./utils/format-properties-data')
-const { replaceReviewNamesWithIds, sortKeysInReviewsData } = require('./utils/format-reviews-data')
+const { replaceReviewNamesWithIds, sortKeysInReviewsData, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
 
-async function seed(propertyTypesData, usersData, propertiesData, reviewsData) {
+async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData) {
     await db.query(`DROP TABLE IF EXISTS images`)
     await db.query(`DROP TABLE IF EXISTS reviews`)
     await db.query(`DROP TABLE IF EXISTS properties`)
@@ -91,6 +91,19 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData) {
         image_url VARCHAR NOT NULL,
         alt_text VARCHAR NOT NULL
         )`)
+    
+    const updatedImages = replacePropertyNamesWithIds(imagesData, propertiesData)
+    const finalFormattedImages = formatJson(updatedImages)
+
+    console.log(finalFormattedImages[1], '<<<<<<<<<<<<<<<<<')
+
+    await db.query(
+        pgFormat(
+            `INSERT INTO images (property_id, image_url, alt_text) VALUES %L`,
+            finalFormattedImages
+        )
+    )
+    console.log('Success!')
 }
 
 module.exports = seed

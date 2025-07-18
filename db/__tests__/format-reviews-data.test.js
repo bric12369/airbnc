@@ -1,5 +1,5 @@
 const formatReviews = require('../utils/format-reviews-data')
-const { replacePropertyNamesWithIds, replaceGuestNamesWithIds, replaceReviewNamesWithIds, sortKeysInReviewsData } = formatReviews
+const { replacePropertyNamesWithIds, replaceGuestNamesWithIds, replaceReviewNamesWithIds, sortKeys } = formatReviews
 const { reviewsData, propertiesData, usersData, imagesData } = require('../data/test')
 
 describe('replacePropertyNamesWithIds', () => {
@@ -169,7 +169,6 @@ describe('replaceReviewNamesWithIds', () => {
         const result = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
         expect(result[0].property_id).toBe(3)
         expect(result[0].guest_id).toBe(4)
-        console.log(result[0],'<<<<<<<<<<<')
         for (let i = 0; i < result.length; i++) {
             const currResult = result[i]
             expect(currResult).not.toHaveProperty('property_name')
@@ -189,7 +188,7 @@ describe('replaceReviewNamesWithIds', () => {
     })
 })
 
-describe('sortKeysInReviewsData', () => {
+describe('sortKeys', () => {
     test('orders the keys of one updated review to match the expected database format', () => {
         const updatedReviewTest = [
             {
@@ -200,6 +199,7 @@ describe('sortKeysInReviewsData', () => {
                 guest_id: 4
               } 
         ]
+        const keyOrder = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
         const expected = [
             {
                 property_id: 3,
@@ -209,15 +209,23 @@ describe('sortKeysInReviewsData', () => {
                 created_at: '2024-03-28T10:15:00Z'
               } 
         ]
-        const result = sortKeysInReviewsData(updatedReviewTest)
+        const result = sortKeys(updatedReviewTest, keyOrder)
         expect(Object.keys(result[0])).toEqual(Object.keys(expected[0]))
     })
     test('orders the keys of multiple updated reviews to match the expected database format', () => {
         const updatedReviews = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
-        const result = sortKeysInReviewsData(updatedReviews)
         const keyOrder = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
+        const result = sortKeys(updatedReviews, keyOrder)
         result.forEach((review) => {
             expect(Object.keys(review)).toEqual(keyOrder)
+        })
+    })
+    test('accepts any array of json objects and orders their keys accordingly', () => {
+        const updatedImages = replacePropertyNamesWithIds(imagesData, propertiesData)
+        const keyOrder = ['property_id', 'image_url', 'alt_text']
+        const result = sortKeys(updatedImages, keyOrder)
+        result.forEach((image) => {
+            expect(Object.keys(image)).toEqual(keyOrder)
         })
     })
 })
