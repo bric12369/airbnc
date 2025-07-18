@@ -34,4 +34,49 @@ describe('replacePropertyNamesWithIds', () => {
         expect(result[4].property_id).toBe(9)
         expect(result[4]).not.toHaveProperty('property_name')
     })
+    test('does not mutate inputs', () => {
+        const testReviewsData = [
+            {
+                "guest_name": "Bob Smith",
+                "property_name": "Modern Apartment in City Center",
+                "rating": 2,
+                "comment": "Comment about Modern Apartment in City Center",
+                "created_at": "2024-04-12T14:45:00Z"
+            }
+        ]
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+            }
+        ]
+        const testReviewsDataCopy = [
+            {
+                "guest_name": "Bob Smith",
+                "property_name": "Modern Apartment in City Center",
+                "rating": 2,
+                "comment": "Comment about Modern Apartment in City Center",
+                "created_at": "2024-04-12T14:45:00Z"
+            }
+        ]
+        const testPropertiesDataCopy = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+            }
+        ]
+        replacePropertyNamesWithIds(testReviewsData, testPropertiesData)
+        expect(testReviewsData).toEqual(testReviewsDataCopy)
+        expect(testPropertiesData).toEqual(testPropertiesDataCopy)
+    })
 })
