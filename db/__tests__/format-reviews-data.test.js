@@ -171,6 +171,15 @@ describe('replaceReviewNamesWithIds', () => {
             expect(currResult).toHaveProperty('guest_id')
         }
     })
+    test('does not mutate inputs', () => {
+        const reviewsDataCopy = structuredClone(reviewsData)
+        const propertiesDataCopy = structuredClone(propertiesData)
+        const usersDataCopy = structuredClone(usersData)
+        replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
+        expect(reviewsData).toEqual(reviewsDataCopy)
+        expect(propertiesData).toEqual(propertiesDataCopy)
+        expect(usersData).toEqual(usersDataCopy)
+    })
 })
 
 describe('sortKeysInReviewsData', () => {
