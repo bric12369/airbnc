@@ -222,7 +222,7 @@ describe('sortKeys', () => {
     })
     test('accepts any array of json objects and orders their keys accordingly', () => {
         const updatedImages = replacePropertyNamesWithIds(imagesData, propertiesData)
-        const keyOrder = ['property_id', 'image_url', 'alt_text']
+        const keyOrder = ['property_id', 'image_url', 'alt_tag']
         const result = sortKeys(updatedImages, keyOrder)
         result.forEach((image) => {
             expect(Object.keys(image)).toEqual(keyOrder)
