@@ -80,7 +80,7 @@ describe('replacePropertyNamesWithIds', () => {
         expect(testReviewsData).toEqual(testReviewsDataCopy)
         expect(testPropertiesData).toEqual(testPropertiesDataCopy)
     })
-    test('handles imagesData successfully and replaces property names with property ids', () => {
+    test('handles other inputs successfully where property names can be replaced with property ids', () => {
         const result = replacePropertyNamesWithIds(imagesData, propertiesData)
         result.forEach((image) => {
             expect(image).not.toHaveProperty('property_name')
