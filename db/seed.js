@@ -71,7 +71,6 @@ async function seed(propertyTypesData, usersData, propertiesData) {
         comment TEXT,
         created_at TIMESTAMP DEFAULT NOW()
         )`)
-    console.log('SUCCESSSSSSS')
 }
 
 module.exports = seed

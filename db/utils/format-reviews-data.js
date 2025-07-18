@@ -13,8 +13,19 @@ const replacePropertyNamesWithIds = (reviews, properties) => {
     return reviewsWithPropertyIds
 }
 
-const replaceGuestNamesWithIds = () => {
-
+const replaceGuestNamesWithIds = (reviews, users) => {
+    const reviewsWithGuestIds = structuredClone(reviews)
+    const usernames = users.map((user) => {
+        return user.first_name + ' ' + user.surname
+    })
+    for (let i = 0; i < reviewsWithGuestIds.length; i++) {
+        const review = reviewsWithGuestIds[i]
+        if (usernames.includes(review.guest_name)) {
+            review.guest_id = usernames.indexOf(review.guest_name) + 1
+            delete review.guest_name
+        }
+    }
+    return reviewsWithGuestIds
 }
 
 const sortKeysInReviewsData = () => {

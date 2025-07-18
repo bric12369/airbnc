@@ -1,5 +1,5 @@
 const { replacePropertyNamesWithIds, replaceGuestNamesWithIds, sortKeysInReviewsData } = require('../utils/format-reviews-data')
-const { reviewsData, propertiesData } = require('../data/test')
+const { reviewsData, propertiesData, usersData } = require('../data/test')
 
 describe('replacePropertyNamesWithIds', () => {
     test('takes reviews and properties. When passed an array of single review and an array of property with matching name, replaces property_name in review with corresponding property_id', () => {
@@ -78,5 +78,80 @@ describe('replacePropertyNamesWithIds', () => {
         replacePropertyNamesWithIds(testReviewsData, testPropertiesData)
         expect(testReviewsData).toEqual(testReviewsDataCopy)
         expect(testPropertiesData).toEqual(testPropertiesDataCopy)
+    })
+})
+
+describe('replaceGuestNamesWithIds', () => {
+    test('takes reviews and users. When passed an array of single review and an array of user with matching name, replaces guest_name in review with corresponding guest_id', () => {
+        const testReviewsData = [
+            {
+                "guest_name": "Bob Smith",
+                "property_name": "Modern Apartment in City Center",
+                "rating": 2,
+                "comment": "Comment about Modern Apartment in City Center",
+                "created_at": "2024-04-12T14:45:00Z"
+            }
+        ]
+        const testUsersData = [
+            {
+                "first_name": "Bob",
+                "surname": "Smith",
+                "email": "bob@example.com",
+                "phone_number": "+44 7000 222222",
+                "is_host": false,
+                "avatar": "https://example.com/images/bob.jpg"
+              }
+        ]
+        const result = replaceGuestNamesWithIds(testReviewsData, testUsersData)
+        expect(result[0].guest_id).toBe(1)
+        expect(result[0]).not.toHaveProperty('user_name')
+    })
+    test('When passed an array of reviews and an array of users, replaces guest_name with corresponding guest_id for each review', () => {
+        const result = replaceGuestNamesWithIds(reviewsData, usersData)
+        expect(result[0].guest_id).toBe(4)
+        expect(result[2]).not.toHaveProperty('guest_name')
+    })
+    test('does not mutate inputs', () => {
+        const testReviewsData = [
+            {
+                "guest_name": "Bob Smith",
+                "property_name": "Modern Apartment in City Center",
+                "rating": 2,
+                "comment": "Comment about Modern Apartment in City Center",
+                "created_at": "2024-04-12T14:45:00Z"
+            }
+        ]
+        const testUsersData = [
+            {
+                "first_name": "Bob",
+                "surname": "Smith",
+                "email": "bob@example.com",
+                "phone_number": "+44 7000 222222",
+                "is_host": false,
+                "avatar": "https://example.com/images/bob.jpg"
+              }
+        ]
+        const testReviewsDataCopy = [
+            {
+                "guest_name": "Bob Smith",
+                "property_name": "Modern Apartment in City Center",
+                "rating": 2,
+                "comment": "Comment about Modern Apartment in City Center",
+                "created_at": "2024-04-12T14:45:00Z"
+            }
+        ]
+        const testUsersDataCopy = [
+            {
+                "first_name": "Bob",
+                "surname": "Smith",
+                "email": "bob@example.com",
+                "phone_number": "+44 7000 222222",
+                "is_host": false,
+                "avatar": "https://example.com/images/bob.jpg"
+              }
+        ]
+        replaceGuestNamesWithIds(testReviewsData, testUsersData)
+        expect(testReviewsData).toEqual(testReviewsDataCopy)
+        expect(testUsersData).toEqual(testUsersDataCopy)
     })
 })
