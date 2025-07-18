@@ -2,7 +2,7 @@ const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
 const { replaceHostNamesWithIds, sortKeysInPropertiesData } = require('./utils/format-properties-data')
-const { replaceReviewNamesWithIds, sortKeysInReviewsData, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
+const { replaceReviewNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
 
 async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData) {
     await db.query(`DROP TABLE IF EXISTS images`)
@@ -75,7 +75,8 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         )`)
 
     const updatedReviews = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
-    const sortedReviews = sortKeysInReviewsData(updatedReviews)
+    const reviewsColumnOrder = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
+    const sortedReviews = sortKeys(updatedReviews, reviewsColumnOrder)
     const finalFormattedReviews = formatJson(sortedReviews)
 
     await db.query(
@@ -93,9 +94,9 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         )`)
     
     const updatedImages = replacePropertyNamesWithIds(imagesData, propertiesData)
-    const finalFormattedImages = formatJson(updatedImages)
-
-    console.log(finalFormattedImages[1], '<<<<<<<<<<<<<<<<<')
+    const imagesColumnOrder = ['property_id', 'image_url', 'alt_tag']
+    const sortedImages = sortKeys(updatedImages, imagesColumnOrder)
+    const finalFormattedImages = formatJson(sortedImages)
 
     await db.query(
         pgFormat(
