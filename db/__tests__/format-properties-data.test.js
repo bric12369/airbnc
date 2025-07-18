@@ -311,16 +311,10 @@ describe('sortKeysInPropertiesData', () => {
     test('orders the keys of multiple formatted properties to match the expected database format', () => {
         const formatted = replaceHostNamesWithIds(usersData, propertiesData)
         const result = sortKeysInPropertiesData(formatted)
-        const expectedProperty = {
-            host_id: 3,
-            name: "Elegant City Apartment",
-            location: "Birmingham, UK",
-            property_type: "Apartment",
-            price_per_night: 110.0,
-            description: "Description of Elegant City Apartment."
-        }
-        expect(Object.keys(result[3])).toEqual(Object.keys(expectedProperty))
-        expect(result[3]).toEqual(expectedProperty)
+        const keyOrder = ['host_id', 'name', 'location', 'property_type', 'price_per_night', 'description']
+        result.forEach((property) => {
+            expect(Object.keys(property)).toEqual(keyOrder)
+        })
     })
     test('does not mutate input', () => {
         const testPropertiesData = [
