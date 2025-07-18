@@ -34,8 +34,17 @@ const replaceReviewNamesWithIds = (reviews, properties, users) => {
     return updatedReviews
 }
 
-const sortKeysInReviewsData = () => {
-
+const sortKeysInReviewsData = (updatedReviews) => {
+    const keyOrder = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
+    const orderedReviews = updatedReviews.map((review) => {
+        const orderedReview = {}
+        for (const key of keyOrder) {
+            const value = review[key]
+            orderedReview[key] = value
+        }
+        return orderedReview
+    })
+    return orderedReviews
 }
 
 module.exports = { replacePropertyNamesWithIds, replaceGuestNamesWithIds, replaceReviewNamesWithIds, sortKeysInReviewsData }

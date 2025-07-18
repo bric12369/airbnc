@@ -162,6 +162,7 @@ describe('replaceReviewNamesWithIds', () => {
         const result = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
         expect(result[0].property_id).toBe(3)
         expect(result[0].guest_id).toBe(4)
+        console.log(result[0],'<<<<<<<<<<<')
         for (let i = 0; i < result.length; i++) {
             const currResult = result[i]
             expect(currResult).not.toHaveProperty('property_name')
@@ -169,5 +170,38 @@ describe('replaceReviewNamesWithIds', () => {
             expect(currResult).toHaveProperty('property_id')
             expect(currResult).toHaveProperty('guest_id')
         }
+    })
+})
+
+describe('sortKeysInReviewsData', () => {
+    test('orders the keys of one updated review to match the expected database format', () => {
+        const updatedReviewTest = [
+            {
+                rating: 4,
+                comment: 'Comment about Chic Studio Near the Beach',
+                created_at: '2024-03-28T10:15:00Z',
+                property_id: 3,
+                guest_id: 4
+              } 
+        ]
+        const expected = [
+            {
+                property_id: 3,
+                guest_id: 4,
+                rating: 4,
+                comment: 'Comment about Chic Studio Near the Beach',
+                created_at: '2024-03-28T10:15:00Z'
+              } 
+        ]
+        const result = sortKeysInReviewsData(updatedReviewTest)
+        expect(Object.keys(result[0])).toEqual(Object.keys(expected[0]))
+    })
+    test('orders the keys of multiple updated reviews to match the expected database format', () => {
+        const updatedReviews = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
+        const result = sortKeysInReviewsData(updatedReviews)
+        const keyOrder = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
+        result.forEach((review) => {
+            expect(Object.keys(review)).toEqual(keyOrder)
+        })
     })
 })
