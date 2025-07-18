@@ -1,7 +1,7 @@
 const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
-const { replaceHostNamesWithIds, sortKeysInPropertiesData } = require('./utils/format-properties-data')
+const { replaceHostNamesWithIds } = require('./utils/format-properties-data')
 const { replaceReviewNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
 
 async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData) {
