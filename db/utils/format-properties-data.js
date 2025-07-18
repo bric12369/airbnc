@@ -13,4 +13,4 @@ const replaceHostNamesWithIds = (users, properties) => {
     return formattedProperties
 }
 
-module.exports = { replaceHostNamesWithIds, sortKeysInPropertiesData }
+module.exports = { replaceHostNamesWithIds }
