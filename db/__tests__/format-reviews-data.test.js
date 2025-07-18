@@ -228,4 +228,29 @@ describe('sortKeys', () => {
             expect(Object.keys(image)).toEqual(keyOrder)
         })
     })
+    test('does not mutate input', () => {
+        const updatedReviewTest = [
+            {
+                rating: 4,
+                comment: 'Comment about Chic Studio Near the Beach',
+                created_at: '2024-03-28T10:15:00Z',
+                property_id: 3,
+                guest_id: 4
+              } 
+        ]
+        const keyOrder = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
+        const updatedReviewTestCopy = [
+            {
+                rating: 4,
+                comment: 'Comment about Chic Studio Near the Beach',
+                created_at: '2024-03-28T10:15:00Z',
+                property_id: 3,
+                guest_id: 4
+              } 
+        ]
+        const keyOrderCopy = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
+        sortKeys(updatedReviewTest, keyOrder)
+        expect(updatedReviewTest).toEqual(updatedReviewTestCopy)
+        expect(keyOrder).toEqual(keyOrderCopy)
+    })
 })
