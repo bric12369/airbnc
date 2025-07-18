@@ -1,4 +1,4 @@
 const seed = require('./seed')
-const { propertyTypesData, usersData, propertiesData } = require('./data/test')
+const { propertyTypesData, usersData, propertiesData, reviewsData } = require('./data/test')
 
-seed(propertyTypesData, usersData, propertiesData)
+seed(propertyTypesData, usersData, propertiesData, reviewsData)

@@ -2,8 +2,9 @@ const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
 const { replaceHostNamesWithIds, sortKeysInPropertiesData } = require('./utils/format-properties-data')
+const { replaceReviewNamesWithIds, sortKeysInReviewsData } = require('./utils/format-reviews-data')
 
-async function seed(propertyTypesData, usersData, propertiesData) {
+async function seed(propertyTypesData, usersData, propertiesData, reviewsData) {
     await db.query(`DROP TABLE IF EXISTS reviews`)
     await db.query(`DROP TABLE IF EXISTS properties`)
     await db.query(`DROP TABLE IF EXISTS property_types`)
@@ -71,6 +72,17 @@ async function seed(propertyTypesData, usersData, propertiesData) {
         comment TEXT,
         created_at TIMESTAMP DEFAULT NOW()
         )`)
+
+    const updatedReviews = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
+    const sortedReviews = sortKeysInReviewsData(updatedReviews)
+    const finalFormattedReviews = formatJson(sortedReviews)
+
+    await db.query(
+        pgFormat(
+            `INSERT INTO reviews (property_id, guest_id, rating, comment, created_at) VALUES %L`,
+            finalFormattedReviews
+        )
+    )
 }
 
 module.exports = seed
