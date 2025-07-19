@@ -89,81 +89,6 @@ describe('replacePropertyNamesWithIds', () => {
     })
 })
 
-describe('replaceGuestNamesWithIds', () => {
-    test('takes reviews and users. When passed an array of single review and an array of user with matching name, replaces guest_name in review with corresponding guest_id', () => {
-        const testReviewsData = [
-            {
-                "guest_name": "Bob Smith",
-                "property_name": "Modern Apartment in City Center",
-                "rating": 2,
-                "comment": "Comment about Modern Apartment in City Center",
-                "created_at": "2024-04-12T14:45:00Z"
-            }
-        ]
-        const testUsersData = [
-            {
-                "first_name": "Bob",
-                "surname": "Smith",
-                "email": "bob@example.com",
-                "phone_number": "+44 7000 222222",
-                "is_host": false,
-                "avatar": "https://example.com/images/bob.jpg"
-              }
-        ]
-        const result = replaceGuestNamesWithIds(testReviewsData, testUsersData)
-        expect(result[0].guest_id).toBe(1)
-        expect(result[0]).not.toHaveProperty('user_name')
-    })
-    test('When passed an array of reviews and an array of users, replaces guest_name with corresponding guest_id for each review', () => {
-        const result = replaceGuestNamesWithIds(reviewsData, usersData)
-        expect(result[0].guest_id).toBe(4)
-        expect(result[2]).not.toHaveProperty('guest_name')
-    })
-    test('does not mutate inputs', () => {
-        const testReviewsData = [
-            {
-                "guest_name": "Bob Smith",
-                "property_name": "Modern Apartment in City Center",
-                "rating": 2,
-                "comment": "Comment about Modern Apartment in City Center",
-                "created_at": "2024-04-12T14:45:00Z"
-            }
-        ]
-        const testUsersData = [
-            {
-                "first_name": "Bob",
-                "surname": "Smith",
-                "email": "bob@example.com",
-                "phone_number": "+44 7000 222222",
-                "is_host": false,
-                "avatar": "https://example.com/images/bob.jpg"
-              }
-        ]
-        const testReviewsDataCopy = [
-            {
-                "guest_name": "Bob Smith",
-                "property_name": "Modern Apartment in City Center",
-                "rating": 2,
-                "comment": "Comment about Modern Apartment in City Center",
-                "created_at": "2024-04-12T14:45:00Z"
-            }
-        ]
-        const testUsersDataCopy = [
-            {
-                "first_name": "Bob",
-                "surname": "Smith",
-                "email": "bob@example.com",
-                "phone_number": "+44 7000 222222",
-                "is_host": false,
-                "avatar": "https://example.com/images/bob.jpg"
-              }
-        ]
-        replaceGuestNamesWithIds(testReviewsData, testUsersData)
-        expect(testReviewsData).toEqual(testReviewsDataCopy)
-        expect(testUsersData).toEqual(testUsersDataCopy)
-    })
-})
-
 describe('replacePeopleNamesWithIds', () => {
     test('takes an array of user JSON objects and an array of property JSON objects. When passed array of single user with is_host true and single property whose host_name matches user first and surname, assigns a host_id property', () => {
         const testUsersData = [
@@ -444,30 +369,6 @@ describe('replacePeopleNamesWithIds', () => {
     })
 })
 
-describe('replaceReviewNamesWithIds', () => {
-    test('removes guest and property names in reviews and replaces them with ids', () => {
-        const result = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
-        expect(result[0].property_id).toBe(3)
-        expect(result[0].guest_id).toBe(4)
-        for (let i = 0; i < result.length; i++) {
-            const currResult = result[i]
-            expect(currResult).not.toHaveProperty('property_name')
-            expect(currResult).not.toHaveProperty('guest_name')
-            expect(currResult).toHaveProperty('property_id')
-            expect(currResult).toHaveProperty('guest_id')
-        }
-    })
-    test('does not mutate inputs', () => {
-        const reviewsDataCopy = structuredClone(reviewsData)
-        const propertiesDataCopy = structuredClone(propertiesData)
-        const usersDataCopy = structuredClone(usersData)
-        replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
-        expect(reviewsData).toEqual(reviewsDataCopy)
-        expect(propertiesData).toEqual(propertiesDataCopy)
-        expect(usersData).toEqual(usersDataCopy)
-    })
-})
-
 describe('sortKeys', () => {
     test('orders the keys of one updated review to match the expected database format', () => {
         const updatedReviewTest = [
@@ -493,7 +394,8 @@ describe('sortKeys', () => {
         expect(Object.keys(result[0])).toEqual(Object.keys(expected[0]))
     })
     test('orders the keys of multiple updated reviews to match the expected database format', () => {
-        const updatedReviews = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
+        const reviewsWithpropertyIds = replacePropertyNamesWithIds(reviewsData, propertiesData)
+        const updatedReviews = replacePeopleNamesWithIds(usersData, reviewsWithpropertyIds)
         const keyOrder = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
         const result = sortKeys(updatedReviews, keyOrder)
         result.forEach((review) => {
