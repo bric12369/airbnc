@@ -4,7 +4,7 @@ const pgFormat = require('pg-format')
 const { replacePeopleNamesWithIds } = require('./utils/format-properties-data')
 const { replaceReviewNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
 
-async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData) {
+async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData) {
     await db.query(`DROP TABLE IF EXISTS bookings`)
     await db.query(`DROP TABLE IF EXISTS favourites`)
     await db.query(`DROP TABLE IF EXISTS images`)
@@ -135,6 +135,19 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         check_out_date DATE NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
         )`)
+
+    const bookingsWithPropertyIds = replacePropertyNamesWithIds(bookingsData, propertiesData)
+    const updatedBookings = replacePeopleNamesWithIds(usersData, bookingsWithPropertyIds)
+    const bookingsColumnOrder = ['property_id', 'guest_id', 'check_in_date', 'check_out_date']
+    const sortedBookings = sortKeys(updatedBookings, bookingsColumnOrder)
+    const finalFormattedBookings = formatJson(sortedBookings)
+
+    await db.query(
+        pgFormat(
+            `INSERT INTO bookings (property_id, guest_id, check_in_date, check_out_date) VALUES %L`,
+            finalFormattedBookings
+        )
+    )
 }
 
 module.exports = seed
