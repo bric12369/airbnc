@@ -47,4 +47,14 @@ const sortKeys = (items, keyOrder) => {
     return orderedItems
 }
 
-module.exports = { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys }
+const extractUniqueAmenities = (properties) => {
+    const uniqueAmenities = []
+    for (const property of properties) {
+        for (const amenity of property.amenities) {
+            if (!uniqueAmenities.includes(amenity)) uniqueAmenities.push(amenity)
+        }
+    }
+    return uniqueAmenities
+}
+
+module.exports = { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys, extractUniqueAmenities }
