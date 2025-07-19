@@ -13,21 +13,6 @@ const replacePropertyNamesWithIds = (items, properties) => {
     return itemsWithPropertyIds
 }
 
-const replaceGuestNamesWithIds = (reviews, users) => {
-    const reviewsWithGuestIds = structuredClone(reviews)
-    const usernames = users.map((user) => {
-        return user.first_name + ' ' + user.surname
-    })
-    for (let i = 0; i < reviewsWithGuestIds.length; i++) {
-        const review = reviewsWithGuestIds[i]
-        if (usernames.includes(review.guest_name)) {
-            review.guest_id = usernames.indexOf(review.guest_name) + 1
-            delete review.guest_name
-        }
-    }
-    return reviewsWithGuestIds
-}
-
 const replacePeopleNamesWithIds = (users, items) => {
     const itemsWithNameIds = structuredClone(items)
     const usernames = users.map((user) => {
@@ -50,12 +35,6 @@ const replacePeopleNamesWithIds = (users, items) => {
     return itemsWithNameIds
 }
 
-const replaceReviewNamesWithIds = (reviews, properties, users) => {
-    let updatedReviews = replacePropertyNamesWithIds(reviews, properties)
-    updatedReviews = replaceGuestNamesWithIds(updatedReviews, users)
-    return updatedReviews
-}
-
 const sortKeys = (items, keyOrder) => {
     const orderedItems = items.map((item) => {
         const orderedItem = {}
@@ -68,4 +47,4 @@ const sortKeys = (items, keyOrder) => {
     return orderedItems
 }
 
-module.exports = { replacePropertyNamesWithIds, replacePeopleNamesWithIds, replaceGuestNamesWithIds, replaceReviewNamesWithIds, sortKeys }
+module.exports = { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys }

@@ -1,5 +1,5 @@
 const formatReviews = require('../utils/format-raw-data')
-const { replacePropertyNamesWithIds, replacePeopleNamesWithIds, replaceGuestNamesWithIds, replaceReviewNamesWithIds, sortKeys } = formatReviews
+const { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys } = formatReviews
 const { reviewsData, propertiesData, usersData, imagesData, favouritesData } = require('../data/test')
 
 describe('replacePropertyNamesWithIds', () => {
