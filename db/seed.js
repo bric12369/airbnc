@@ -1,8 +1,7 @@
 const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
-const { replacePeopleNamesWithIds } = require('./utils/format-properties-data')
-const { replaceReviewNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
+const { replaceReviewNamesWithIds, replacePeopleNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-raw-data')
 
 async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData) {
     await db.query(`DROP TABLE IF EXISTS bookings`)
