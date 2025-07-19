@@ -1,5 +1,5 @@
 const { replacePeopleNamesWithIds } = require('../utils/format-properties-data')
-const { usersData, propertiesData, favouritesData } = require('../data/test')
+const { usersData, propertiesData, favouritesData, reviewsData } = require('../data/test')
 
 describe('replacePeopleNamesWithIds', () => {
     test('takes an array of user JSON objects and an array of property JSON objects. When passed array of single user with is_host true and single property whose host_name matches user first and surname, assigns a host_id property', () => {
@@ -271,5 +271,13 @@ describe('replacePeopleNamesWithIds', () => {
         expect(result[2].guest_id).toBe(2)
         expect(result[5].guest_id).toBe(2)
         expect(result[9].guest_id).toBe(6)
+    })
+    test('also replaces guest_ids in reviews with user_id', () => {
+        const result = replacePeopleNamesWithIds(usersData, reviewsData)
+        console.log(result, '<<<<<<<<<<<<<<<<<<<')
+        result.forEach((review) => {
+            expect(review).not.toHaveProperty('guest_name')
+            expect(review).toHaveProperty('guest_id')
+        })
     })
 })
