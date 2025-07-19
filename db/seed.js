@@ -4,6 +4,7 @@ const pgFormat = require('pg-format')
 const {replacePeopleNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-raw-data')
 
 async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData) {
+    await db.query(`DROP TABLE IF EXISTS amenities`)
     await db.query(`DROP TABLE IF EXISTS bookings`)
     await db.query(`DROP TABLE IF EXISTS favourites`)
     await db.query(`DROP TABLE IF EXISTS images`)
@@ -148,6 +149,10 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
             finalFormattedBookings
         )
     )
+
+    await db.query(`CREATE TABLE amenities(
+        amenity VARCHAR PRIMARY KEY
+        )`)
 }
 
 module.exports = seed
