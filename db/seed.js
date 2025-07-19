@@ -5,6 +5,7 @@ const { replacePeopleNamesWithIds } = require('./utils/format-properties-data')
 const { replaceReviewNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
 
 async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData) {
+    await db.query(`DROP TABLE IF EXISTS bookings`)
     await db.query(`DROP TABLE IF EXISTS favourites`)
     await db.query(`DROP TABLE IF EXISTS images`)
     await db.query(`DROP TABLE IF EXISTS reviews`)
@@ -125,6 +126,15 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
             finalFormattedFavourites
         )
     )
+
+    await db.query(`CREATE TABLE bookings(
+        booking_id SERIAL PRIMARY KEY,
+        property_id INT REFERENCES properties(property_id) NOT NULL,
+        guest_id INT REFERENCES users(user_id) NOT NULL,
+        check_in_date DATE NOT NULL,
+        check_out_date DATE NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+        )`)
 }
 
 module.exports = seed
