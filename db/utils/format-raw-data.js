@@ -54,7 +54,7 @@ const extractUniqueAmenities = (properties) => {
             if (!uniqueAmenities.includes(amenity)) uniqueAmenities.push(amenity)
         })
     })
-    return uniqueAmenities
+    return uniqueAmenities.map((amenity) => [amenity])
 }
 
 module.exports = { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys, extractUniqueAmenities }

@@ -451,7 +451,7 @@ describe('extractUniqueAmenities', () => {
               }
         ]
         const result = extractUniqueAmenities(testPropertiesData)
-        expect(result).toEqual(["WiFi", "TV", "Kitchen"])
+        expect(result).toEqual([["WiFi"], ["TV"], ["Kitchen"]])
     })
     test('returns array of amenities when passed an array of two properties with no repeated amenities', () => {
         const testPropertiesData = [
@@ -475,7 +475,7 @@ describe('extractUniqueAmenities', () => {
               }
         ]
         const result = extractUniqueAmenities(testPropertiesData)
-        expect(result).toEqual(["WiFi", "TV", "Kitchen", "Parking"])
+        expect(result).toEqual([["WiFi"], ["TV"], ["Kitchen"], ["Parking"]])
     })
     test('skips repeated amenities and only returns unique ones', () => {
         const testPropertiesData = [
@@ -499,10 +499,10 @@ describe('extractUniqueAmenities', () => {
               }
         ]
         const result = extractUniqueAmenities(testPropertiesData)
-        expect(result).toEqual(["WiFi", "TV", "Kitchen", "Parking"])
+        expect(result).toEqual([["WiFi"], ["TV"], ["Kitchen"], ["Parking"]])
     })
     test('takes any number of property objects and extracts only unique amenities', () => {
         const result = extractUniqueAmenities(propertiesData)
-        expect(result).toEqual(["WiFi", "TV", "Kitchen", "Parking", "Washer"])
+        expect(result).toEqual([["WiFi"], ["TV"], ["Kitchen"], ["Parking"], ["Washer"]])
     })
 })
