@@ -505,4 +505,30 @@ describe('extractUniqueAmenities', () => {
         const result = extractUniqueAmenities(propertiesData)
         expect(result).toEqual([["WiFi"], ["TV"], ["Kitchen"], ["Parking"], ["Washer"]])
     })
+    test('does not mutate input', () => {
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+              }
+        ]
+        const testPropertiesDataCopy = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "TV", "Kitchen"]
+              }
+        ]
+        extractUniqueAmenities(testPropertiesData)
+        expect(testPropertiesData).toEqual(testPropertiesDataCopy)
+    })
 })
