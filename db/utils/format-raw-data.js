@@ -49,11 +49,11 @@ const sortKeys = (items, keyOrder) => {
 
 const extractUniqueAmenities = (properties) => {
     const uniqueAmenities = []
-    for (const property of properties) {
-        for (const amenity of property.amenities) {
+    properties.forEach((property) => {
+        property.amenities.forEach((amenity) => {
             if (!uniqueAmenities.includes(amenity)) uniqueAmenities.push(amenity)
-        }
-    }
+        })
+    })
     return uniqueAmenities
 }
 
