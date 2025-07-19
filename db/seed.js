@@ -1,7 +1,7 @@
 const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
-const { replaceReviewNamesWithIds, replacePeopleNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-raw-data')
+const {replacePeopleNamesWithIds, sortKeys, replacePropertyNamesWithIds, replaceGuestNamesWithIds } = require('./utils/format-raw-data')
 
 async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData) {
     await db.query(`DROP TABLE IF EXISTS bookings`)
@@ -76,7 +76,8 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         created_at TIMESTAMP DEFAULT NOW()
         )`)
 
-    const updatedReviews = replaceReviewNamesWithIds(reviewsData, propertiesData, usersData)
+    const reviewsWithpropertyIds = replacePropertyNamesWithIds(reviewsData, propertiesData)
+    const updatedReviews = replacePeopleNamesWithIds(usersData, reviewsWithpropertyIds)
     const reviewsColumnOrder = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
     const sortedReviews = sortKeys(updatedReviews, reviewsColumnOrder)
     const finalFormattedReviews = formatJson(sortedReviews)
