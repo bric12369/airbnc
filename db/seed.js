@@ -1,7 +1,7 @@
 const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
-const { replaceHostNamesWithIds } = require('./utils/format-properties-data')
+const { replacePeopleNamesWithIds } = require('./utils/format-properties-data')
 const { replaceReviewNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
 
 async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData) {
@@ -55,7 +55,7 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         description TEXT
         )`)
 
-    const propertiesWithHostIds = replaceHostNamesWithIds(usersData, propertiesData)
+    const propertiesWithHostIds = replacePeopleNamesWithIds(usersData, propertiesData)
     const propertiesColumnOrder = ['host_id', 'name', 'location', 'property_type', 'price_per_night', 'description']
     const sortedProperties = sortKeys(propertiesWithHostIds, propertiesColumnOrder)
     const finalFormattedProperties = formatJson(sortedProperties)
@@ -114,7 +114,17 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         )`)
     
     const favouritesWithPropertyIds = replacePropertyNamesWithIds(favouritesData, propertiesData)
-    console.log(favouritesWithPropertyIds, '<<<<<<<<<<')
+    const updatedFavourites = replacePeopleNamesWithIds(usersData, favouritesWithPropertyIds)
+    const favouritesColumnOrder = ['guest_id', 'property_id']
+    const sortedFavourites = sortKeys(updatedFavourites, favouritesColumnOrder)
+    const finalFormattedFavourites = formatJson(sortedFavourites)
+
+    await db.query(
+        pgFormat(
+            `INSERT INTO favourites (guest_id, property_id) VALUES %L`,
+            finalFormattedFavourites
+        )
+    )
 }
 
 module.exports = seed
