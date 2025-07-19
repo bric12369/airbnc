@@ -4,7 +4,7 @@ const pgFormat = require('pg-format')
 const { replaceHostNamesWithIds } = require('./utils/format-properties-data')
 const { replaceReviewNamesWithIds, sortKeys, replacePropertyNamesWithIds } = require('./utils/format-reviews-data')
 
-async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData) {
+async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData) {
     await db.query(`DROP TABLE IF EXISTS favourites`)
     await db.query(`DROP TABLE IF EXISTS images`)
     await db.query(`DROP TABLE IF EXISTS reviews`)
@@ -112,6 +112,9 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         guest_id INT REFERENCES users(user_id) NOT NULL,
         property_id INT REFERENCES properties(property_id) NOT NULL
         )`)
+    
+    const favouritesWithPropertyIds = replacePropertyNamesWithIds(favouritesData, propertiesData)
+    console.log(favouritesWithPropertyIds, '<<<<<<<<<<')
 }
 
 module.exports = seed

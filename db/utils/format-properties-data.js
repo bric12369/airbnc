@@ -1,16 +1,23 @@
-const replaceHostNamesWithIds = (users, properties) => {
-    const formattedProperties = structuredClone(properties)
+const replacePeopleNamesWithIds = (users, items) => {
+    const itemsWithNameIds = structuredClone(items)
     const usernames = users.map((user) => {
         return user.first_name + ' ' + user.surname
     })
-    for (let i = 0; i < formattedProperties.length; i++) {
-        const property = formattedProperties[i]
-        if (usernames.includes(property.host_name)) {
-            property.host_id = usernames.indexOf(property.host_name) + 1
-            delete property.host_name
+    for (let i = 0; i < itemsWithNameIds.length; i++) {
+        const fieldstoUpdate = [
+            { nameKey: 'host_name', idKey: 'host_id' },
+            { nameKey: 'guest_name', idKey: 'guest_id' }
+        ]
+        const item = itemsWithNameIds[i]
+
+        for (const { nameKey, idKey } of fieldstoUpdate) {
+            if (item[nameKey] && usernames.includes(item[nameKey])) {
+                item[idKey] = usernames.indexOf(item[nameKey]) + 1
+                delete item[nameKey]
+            }
         }
     }
-    return formattedProperties
+    return itemsWithNameIds
 }
 
-module.exports = { replaceHostNamesWithIds }
+module.exports = { replacePeopleNamesWithIds }

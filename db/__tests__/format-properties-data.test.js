@@ -1,7 +1,7 @@
-const { replaceHostNamesWithIds, sortKeysInPropertiesData } = require('../utils/format-properties-data')
-const { usersData, propertiesData } = require('../data/test')
+const { replacePeopleNamesWithIds } = require('../utils/format-properties-data')
+const { usersData, propertiesData, favouritesData } = require('../data/test')
 
-describe('replaceHostNamesWithIds', () => {
+describe('replacePeopleNamesWithIds', () => {
     test('takes an array of user JSON objects and an array of property JSON objects. When passed array of single user with is_host true and single property whose host_name matches user first and surname, assigns a host_id property', () => {
         const testUsersData = [
             {
@@ -24,7 +24,7 @@ describe('replaceHostNamesWithIds', () => {
                 "amenities": ["WiFi", "TV", "Kitchen"]
             }
         ]
-        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
+        const result = replacePeopleNamesWithIds(testUsersData, testPropertiesData)
         expect(result[0]).toHaveProperty('host_id')
     })
     test('assigns host_id properties to all property objects when passed an array of multiple properties and an array of multiple users', () => {
@@ -66,7 +66,7 @@ describe('replaceHostNamesWithIds', () => {
                 "amenities": ["WiFi", "Parking", "Kitchen"]
             }
         ]
-        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
+        const result = replacePeopleNamesWithIds(testUsersData, testPropertiesData)
         expect(result[1]).toHaveProperty('host_id')
     })
     test('handles users array where some users are not hosts. Skips these and assigns host id keys to properties accordingly and incrementally', () => {
@@ -116,7 +116,7 @@ describe('replaceHostNamesWithIds', () => {
                 "amenities": ["WiFi", "Parking", "Kitchen"]
             }
         ]
-        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
+        const result = replacePeopleNamesWithIds(testUsersData, testPropertiesData)
         expect(result[0].host_id).toBe(1)
         expect(result[1].host_id).toBe(3)
     })
@@ -176,7 +176,7 @@ describe('replaceHostNamesWithIds', () => {
                 "amenities": ["WiFi"]
             }
         ]
-        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
+        const result = replacePeopleNamesWithIds(testUsersData, testPropertiesData)
         expect(result[0].host_id).toBe(1)
         expect(result[1].host_id).toBe(1)
         expect(result[2].host_id).toBe(1)
@@ -184,7 +184,7 @@ describe('replaceHostNamesWithIds', () => {
     test('test cases', () => {
         const testUsersData = usersData
         const testPropertiesData = propertiesData
-        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
+        const result = replacePeopleNamesWithIds(testUsersData, testPropertiesData)
         expect(result[3].host_id).toBe(3)
         expect(result[4].host_id).toBe(3)
         expect(result[6].host_id).toBe(5)
@@ -212,7 +212,7 @@ describe('replaceHostNamesWithIds', () => {
                 "amenities": ["WiFi", "TV", "Kitchen"]
             }
         ]
-        const result = replaceHostNamesWithIds(testUsersData, testPropertiesData)
+        const result = replacePeopleNamesWithIds(testUsersData, testPropertiesData)
         expect(result[0]).not.toHaveProperty('host_name')
     })
     test('does not mutate passed in users or properties data', () => {
@@ -258,8 +258,18 @@ describe('replaceHostNamesWithIds', () => {
                 "amenities": ["WiFi", "TV", "Kitchen"]
             }
         ]
-        replaceHostNamesWithIds(testUsersData, testPropertiesData)
+        replacePeopleNamesWithIds(testUsersData, testPropertiesData)
         expect(testUsersData).toEqual(testUsersDataCopy)
         expect(testPropertiesData).toEqual(testPropertiesDataCopy)
+    })
+    test('also replaces guest_ids in favourites with user_id', () => {
+        const result = replacePeopleNamesWithIds(usersData, favouritesData)
+        result.forEach((favourite) => {
+            expect(favourite).not.toHaveProperty('guest_name')
+            expect(favourite).toHaveProperty('guest_id')
+        })
+        expect(result[2].guest_id).toBe(2)
+        expect(result[5].guest_id).toBe(2)
+        expect(result[9].guest_id).toBe(6)
     })
 })
