@@ -1,6 +1,5 @@
 const db = require('./connection')
 const pgFormat = require('pg-format')
-const {replacePeopleNamesWithIds, sortKeys, replacePropertyNamesWithIds, extractUniqueAmenities, formatPropertiesAmenitiesData } = require('./utils/format-raw-data')
 
 async function seed(formattedPropertyTypesData, formattedUsersData, finalFormattedProperties, finalFormattedReviews, finalFormattedImages, finalFormattedFavourites, finalFormattedBookings, uniqueAmenities, formattedPropertiesAmenitiesData) {
     await db.query(`DROP TABLE IF EXISTS properties_amenities`)
