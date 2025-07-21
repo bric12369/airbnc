@@ -1,7 +1,7 @@
 const db = require('./connection')
 const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
-const {replacePeopleNamesWithIds, sortKeys, replacePropertyNamesWithIds, extractUniqueAmenities } = require('./utils/format-raw-data')
+const {replacePeopleNamesWithIds, sortKeys, replacePropertyNamesWithIds, extractUniqueAmenities, formatPropertiesAmenitiesData } = require('./utils/format-raw-data')
 
 async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData) {
     await db.query(`DROP TABLE IF EXISTS properties_amenities`)
@@ -143,7 +143,6 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
     const bookingsColumnOrder = ['property_id', 'guest_id', 'check_in_date', 'check_out_date']
     const sortedBookings = sortKeys(updatedBookings, bookingsColumnOrder)
     const finalFormattedBookings = formatJson(sortedBookings)
-    console.log(finalFormattedBookings[0],'<<<<<<<<<<<<<<<')
 
     await db.query(
         pgFormat(
@@ -163,12 +162,21 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         )`)
 
     const uniqueAmenities = extractUniqueAmenities(propertiesData)
-    console.log(uniqueAmenities, '<<<<<<<')
 
     await db.query(
         pgFormat(
             `INSERT INTO amenities (amenity) VALUES %L`,
             uniqueAmenities
+        )
+    )
+
+    const propertiesAmenitiesData = formatPropertiesAmenitiesData(propertiesData)
+    const formattedPropertiesAmenitiesData = formatJson(propertiesAmenitiesData)
+    
+    await db.query(
+        pgFormat(
+            `INSERT INTO properties_amenities (property_id, amenity_slug) VALUES %L`,
+            formattedPropertiesAmenitiesData
         )
     )
 }
