@@ -1,9 +1,8 @@
 const db = require('./connection')
-const formatJson = require('./utils/format-json')
 const pgFormat = require('pg-format')
 const {replacePeopleNamesWithIds, sortKeys, replacePropertyNamesWithIds, extractUniqueAmenities, formatPropertiesAmenitiesData } = require('./utils/format-raw-data')
 
-async function seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData) {
+async function seed(formattedPropertyTypesData, formattedUsersData, finalFormattedProperties, finalFormattedReviews, finalFormattedImages, finalFormattedFavourites, finalFormattedBookings, uniqueAmenities, formattedPropertiesAmenitiesData) {
     await db.query(`DROP TABLE IF EXISTS properties_amenities`)
     await db.query(`DROP TABLE IF EXISTS amenities`)
     await db.query(`DROP TABLE IF EXISTS bookings`)
@@ -19,7 +18,6 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         description TEXT NOT NULL
         )`)
 
-    const formattedPropertyTypesData = formatJson(propertyTypesData)
     await db.query(
         pgFormat(
             `INSERT INTO property_types (property_type, description) VALUES %L`,
@@ -38,7 +36,6 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         created_at TIMESTAMP DEFAULT NOW()
         )`)
 
-    const formattedUsersData = formatJson(usersData)
 
     await db.query(
         pgFormat(
@@ -57,11 +54,6 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         description TEXT
         )`)
 
-    const propertiesWithHostIds = replacePeopleNamesWithIds(usersData, propertiesData)
-    const propertiesColumnOrder = ['host_id', 'name', 'location', 'property_type', 'price_per_night', 'description']
-    const sortedProperties = sortKeys(propertiesWithHostIds, propertiesColumnOrder)
-    const finalFormattedProperties = formatJson(sortedProperties)
-
     await db.query(
         pgFormat(
             `INSERT INTO properties (host_id, name, location, property_type, price_per_night, description) VALUES %L`,
@@ -78,12 +70,6 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         created_at TIMESTAMP DEFAULT NOW()
         )`)
 
-    const reviewsWithpropertyIds = replacePropertyNamesWithIds(reviewsData, propertiesData)
-    const updatedReviews = replacePeopleNamesWithIds(usersData, reviewsWithpropertyIds)
-    const reviewsColumnOrder = ['property_id', 'guest_id', 'rating', 'comment', 'created_at']
-    const sortedReviews = sortKeys(updatedReviews, reviewsColumnOrder)
-    const finalFormattedReviews = formatJson(sortedReviews)
-
     await db.query(
         pgFormat(
             `INSERT INTO reviews (property_id, guest_id, rating, comment, created_at) VALUES %L`,
@@ -97,11 +83,6 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         image_url VARCHAR NOT NULL,
         alt_text VARCHAR NOT NULL
         )`)
-    
-    const updatedImages = replacePropertyNamesWithIds(imagesData, propertiesData)
-    const imagesColumnOrder = ['property_id', 'image_url', 'alt_tag']
-    const sortedImages = sortKeys(updatedImages, imagesColumnOrder)
-    const finalFormattedImages = formatJson(sortedImages)
 
     await db.query(
         pgFormat(
@@ -115,12 +96,6 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         guest_id INT REFERENCES users(user_id) NOT NULL,
         property_id INT REFERENCES properties(property_id) NOT NULL
         )`)
-    
-    const favouritesWithPropertyIds = replacePropertyNamesWithIds(favouritesData, propertiesData)
-    const updatedFavourites = replacePeopleNamesWithIds(usersData, favouritesWithPropertyIds)
-    const favouritesColumnOrder = ['guest_id', 'property_id']
-    const sortedFavourites = sortKeys(updatedFavourites, favouritesColumnOrder)
-    const finalFormattedFavourites = formatJson(sortedFavourites)
 
     await db.query(
         pgFormat(
@@ -137,12 +112,6 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         check_out_date DATE NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
         )`)
-
-    const bookingsWithPropertyIds = replacePropertyNamesWithIds(bookingsData, propertiesData)
-    const updatedBookings = replacePeopleNamesWithIds(usersData, bookingsWithPropertyIds)
-    const bookingsColumnOrder = ['property_id', 'guest_id', 'check_in_date', 'check_out_date']
-    const sortedBookings = sortKeys(updatedBookings, bookingsColumnOrder)
-    const finalFormattedBookings = formatJson(sortedBookings)
 
     await db.query(
         pgFormat(
@@ -161,17 +130,12 @@ async function seed(propertyTypesData, usersData, propertiesData, reviewsData, i
         amenity_slug VARCHAR REFERENCES amenities(amenity) NOT NULL
         )`)
 
-    const uniqueAmenities = extractUniqueAmenities(propertiesData)
-
     await db.query(
         pgFormat(
             `INSERT INTO amenities (amenity) VALUES %L`,
             uniqueAmenities
         )
     )
-
-    const propertiesAmenitiesData = formatPropertiesAmenitiesData(propertiesData)
-    const formattedPropertiesAmenitiesData = formatJson(propertiesAmenitiesData)
     
     await db.query(
         pgFormat(

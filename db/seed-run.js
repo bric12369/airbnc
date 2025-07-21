@@ -1,4 +1,4 @@
 const seed = require('./seed')
-const { propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData } = require('./data/test')
+const { formattedPropertyTypesData, formattedUsersData, finalFormattedProperties, finalFormattedReviews, finalFormattedImages, finalFormattedFavourites, finalFormattedBookings, uniqueAmenities, formattedPropertiesAmenitiesData } = require('./format-all-raw-data')
 
-seed(propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData)
+seed(formattedPropertyTypesData, formattedUsersData, finalFormattedProperties, finalFormattedReviews, finalFormattedImages, finalFormattedFavourites, finalFormattedBookings, uniqueAmenities, formattedPropertiesAmenitiesData)
