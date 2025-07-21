@@ -57,4 +57,19 @@ const extractUniqueAmenities = (properties) => {
     return uniqueAmenities.map((amenity) => [amenity])
 }
 
-module.exports = { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys, extractUniqueAmenities }
+const formatPropertiesAmenitiesData = (properties) => {
+    const propertiesAmenitiesData = []
+    let id = 1
+    properties.forEach((property) => {
+        property.amenities.forEach((amenity) => {
+            propertiesAmenitiesData.push({
+                property_id: id,
+                amenity: amenity
+            })
+        })
+        id++
+    })
+    return propertiesAmenitiesData
+}
+
+module.exports = { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys, extractUniqueAmenities, formatPropertiesAmenitiesData }

@@ -1,5 +1,5 @@
 const formatReviews = require('../utils/format-raw-data')
-const { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys, extractUniqueAmenities } = formatReviews
+const { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys, extractUniqueAmenities, formatPropertiesAmenitiesData } = formatReviews
 const { reviewsData, propertiesData, usersData, imagesData, favouritesData } = require('../data/test')
 
 describe('replacePropertyNamesWithIds', () => {
@@ -529,6 +529,172 @@ describe('extractUniqueAmenities', () => {
               }
         ]
         extractUniqueAmenities(testPropertiesData)
+        expect(testPropertiesData).toEqual(testPropertiesDataCopy)
+    })
+})
+
+describe('formatPropertiesAmenitiesData', () => {
+    test('returns an array of one object containing property id and amenity when passed an array of one property with one amenity', () => {
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi"]
+              }
+        ]
+        const result = formatPropertiesAmenitiesData(testPropertiesData)
+        const expected = [
+            {
+                property_id: 1,
+                amenity: 'WiFi'
+            }
+        ]
+        expect(result).toEqual(expected)
+    })
+    test('When passed an array of one property with multiple amenities, returns an array of objects for each amenity with matching property id', () => {
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "Parking"]
+              }
+        ]
+        const result = formatPropertiesAmenitiesData(testPropertiesData)
+        const expected = [
+            {
+                property_id: 1,
+                amenity: 'WiFi'
+            },
+            {
+                property_id: 1,
+                amenity: 'Parking'
+            }
+        ]
+        expect(result).toEqual(expected)
+    })
+    test('When passed an array of properties, each with single amenity, returns an array of corresponding number of properties with incremented property ids', () => {
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi"]
+              },
+              {
+                "name": "Cosy Family House",
+                "property_type": "House",
+                "location": "Manchester, UK",
+                "price_per_night": 150.0,
+                "description": "Description of Cosy Family House.",
+                "host_name": "Alice Johnson",
+                "amenities": ["Kitchen"]
+              }
+        ]
+        const result = formatPropertiesAmenitiesData(testPropertiesData)
+        const expected = [
+            {
+                property_id: 1,
+                amenity: 'WiFi'
+            },
+            {
+                property_id: 2,
+                amenity: 'Kitchen'
+            }
+        ]
+        expect(result).toEqual(expected)
+    })
+    test('when passed an array of properties, each containing varying numbers of amenities, returns an array of objects. Objects are comprised of property id and one amenity', () => {
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "Kitchen", "Parking"]
+              },
+              {
+                "name": "Cosy Family House",
+                "property_type": "House",
+                "location": "Manchester, UK",
+                "price_per_night": 150.0,
+                "description": "Description of Cosy Family House.",
+                "host_name": "Alice Johnson",
+                "amenities": ["Kitchen", "WiFi"]
+              }
+        ]
+        const result = formatPropertiesAmenitiesData(testPropertiesData)
+        const expected = [
+            {
+                property_id: 1,
+                amenity: 'WiFi'
+            },
+            {
+                property_id: 1,
+                amenity: 'Kitchen'
+            },
+            {
+                property_id: 1,
+                amenity: 'Parking'
+            },
+            {
+                property_id: 2,
+                amenity: 'Kitchen'
+            },
+            {
+                property_id: 2,
+                amenity: 'WiFi'
+            },
+        ]
+        expect(result).toEqual(expected)
+    })
+    test('handles larger number of properties', () => {
+        const result = formatPropertiesAmenitiesData(propertiesData)
+        expect(result[8]).toEqual({
+            property_id: 4,
+            amenity: 'Kitchen'
+        })
+        expect(result[18]).toEqual({
+            property_id: 8,
+            amenity: 'WiFi'
+        })
+    })
+    test('does not mutate input', () => {
+        const testPropertiesData = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "Parking"]
+              }
+        ]
+        const testPropertiesDataCopy = [
+            {
+                "name": "Modern Apartment in City Center",
+                "property_type": "Apartment",
+                "location": "London, UK",
+                "price_per_night": 120.0,
+                "description": "Description of Modern Apartment in City Center.",
+                "host_name": "Alice Johnson",
+                "amenities": ["WiFi", "Parking"]
+              }
+        ]
+        formatPropertiesAmenitiesData(testPropertiesData)
         expect(testPropertiesData).toEqual(testPropertiesDataCopy)
     })
 })
