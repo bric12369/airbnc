@@ -22,10 +22,12 @@
   "homepage": "https://github.com/bric12369/airbnc#readme",
   "dependencies": {
     "dotenv": "^17.2.0",
+    "express": "^5.1.0",
     "pg": "^8.16.3",
     "pg-format": "^1.0.4"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "supertest": "^7.1.4"
   }
 }
