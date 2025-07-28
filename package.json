@@ -4,7 +4,9 @@
   "description": "...",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest app.test.js",
+    "test-json": "jest format-json.test.js",
+    "test-raw-data": "jest format-raw-data.test.js",
     "setup-db": "psql -f ./db/setup.sql",
     "seed": "node db/seed-run.js"
   },
