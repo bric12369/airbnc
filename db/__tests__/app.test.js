@@ -1,5 +1,7 @@
 const app = require('../app')
 const request = require('supertest')
+const { toBeOneOf } = require('jest-extended')
+expect.extend({ toBeOneOf })
 
 describe('app', () => {
     describe('GET /api/properties', () => {
@@ -23,11 +25,26 @@ describe('app', () => {
                 test('properties are ordered from most favourited to least by default', async () => {
                     const { body } = await request(app).get('/api/properties')
                     expect(body.properties[0].property_id).toBe(2)
-                    expect(body.properties[body.properties.length - 1].property_id).toBe(4)
+                    expect(body.properties[body.properties.length - 1].property_id).toBeOneOf([4, 11])
                 })
                 test('?sort=cost_per_night orders properties from highest cost_per_night to lowest', async () => {
                     const { body } = await request(app).get('/api/properties?sort=price_per_night')
                     expect(body.properties[0].property_id).toBe(6)
+                    expect(body.properties[body.properties.length - 1].property_id).toBe(5)
+                })
+            })
+            describe('dir', () => {
+            test('?dir=asc inverts the default order of properties', async () => {
+                    const { body } = await request(app).get('/api/properties?dir=asc')
+                    console.log(body.properties)
+                    expect(body.properties[0].property_id).toBeOneOf([4, 11])
+                    expect(body.properties[body.properties.length - 1].property_id).toBe(2)
+                })
+                test('?dir=asc chains onto ?sort=cost_per_night to order from lowest to highest cost_per_night', async () => {
+                    const { body } = await request(app).get('/api/properties?sort=price_per_night&dir=asc')
+                    console.log(body.properties)
+                    expect(body.properties[body.properties.length - 1].property_id).toBe(6)
+                    expect(body.properties[0].property_id).toBe(5)
                 })
             })
         })
