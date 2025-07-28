@@ -18,5 +18,18 @@ describe('app', () => {
                 expect(property.hasOwnProperty('host')).toBe(true)
             })
         })
+        describe('Queries', () => {
+            describe('sort', () => {
+                test('properties are ordered from most favourited to least by default', async () => {
+                    const { body } = await request(app).get('/api/properties')
+                    expect(body.properties[0].property_id).toBe(2)
+                    expect(body.properties[body.properties.length - 1].property_id).toBe(4)
+                })
+                test('?sort=cost_per_night orders properties from highest cost_per_night to lowest', async () => {
+                    const { body } = await request(app).get('/api/properties?sort=price_per_night')
+                    expect(body.properties[0].property_id).toBe(6)
+                })
+            })
+        })
     })
 })

@@ -1,7 +1,8 @@
 const fetchAllProperties = require('../models/properties.model')
 
 const getAllProperties = async (req, res) => {
-    const properties = await fetchAllProperties()
+    const { sort } = req.query
+    const properties = await fetchAllProperties(sort)
     res.send({ properties })
 }
 
