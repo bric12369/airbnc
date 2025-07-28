@@ -10,8 +10,15 @@ const fetchAllProperties = async (sort, dir, max_price, min_price) => {
 
     let whereClause = ''
     const whereConditions = []
-    if (max_price && !isNaN(max_price)) whereConditions.push(`price_per_night <= ${max_price}`)
-    if (min_price && !isNaN(min_price)) whereConditions.push(`price_per_night >= ${min_price}`)
+    const values = []
+    if (max_price && !isNaN(max_price)) {
+        values.push(max_price)
+        whereConditions.push(`price_per_night <= $${values.length}`)
+    }
+    if (min_price && !isNaN(min_price)){ 
+        values.push(min_price)
+        whereConditions.push(`price_per_night >= $${values.length}`)
+    }
     if (whereConditions.length) whereClause = 'WHERE ' + whereConditions.join(' AND ')
 
     const { rows } = await db.query(
@@ -25,7 +32,7 @@ const fetchAllProperties = async (sort, dir, max_price, min_price) => {
         LEFT JOIN favourites ON properties.property_id = favourites.property_id
         ${whereClause}
         GROUP BY properties.property_id, name, location, price_per_night, users.first_name, users.surname
-        ORDER BY ${orderClause} ${directionClause};`
+        ORDER BY ${orderClause} ${directionClause};`, values
     )
     return rows
 }
