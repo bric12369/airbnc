@@ -1,5 +1,8 @@
 const express = require('express')
+const getAllProperties = require('./controllers/properties.controller')
 
 const app = express()
 
-modules.exports = app
+app.get('/api/properties',  getAllProperties)
+
+module.exports = app
