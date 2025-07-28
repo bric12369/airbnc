@@ -36,15 +36,22 @@ describe('app', () => {
             describe('dir', () => {
             test('?dir=asc inverts the default order of properties', async () => {
                     const { body } = await request(app).get('/api/properties?dir=asc')
-                    console.log(body.properties)
                     expect(body.properties[0].property_id).toBeOneOf([4, 11])
                     expect(body.properties[body.properties.length - 1].property_id).toBe(2)
                 })
                 test('?dir=asc chains onto ?sort=cost_per_night to order from lowest to highest cost_per_night', async () => {
                     const { body } = await request(app).get('/api/properties?sort=price_per_night&dir=asc')
-                    console.log(body.properties)
                     expect(body.properties[body.properties.length - 1].property_id).toBe(6)
                     expect(body.properties[0].property_id).toBe(5)
+                })
+            })
+            describe('maxprice', () => {
+                test('?max_price limits returned properties by max price', async () => {
+                    const { body } = await request(app).get('/api/properties?max_price=100')
+                    console.log(body.properties)
+                    body.properties.forEach((property) => {
+                        expect(property.price_per_night <= 100).toBe(true)
+                    })
                 })
             })
         })
