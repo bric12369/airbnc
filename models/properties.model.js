@@ -1,4 +1,4 @@
-const db = require('../connection')
+const db = require('../db/connection')
 
 const fetchAllProperties = async (sort, dir, max_price, min_price) => {
 

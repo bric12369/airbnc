@@ -2,7 +2,7 @@ const app = require('../app')
 const request = require('supertest')
 const { toBeOneOf } = require('jest-extended')
 expect.extend({ toBeOneOf })
-const db = require('../connection')
+const db = require('../db/connection')
 
 afterAll(() => {
     db.end()

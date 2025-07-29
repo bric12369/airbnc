@@ -1,5 +1,5 @@
-const formatJson = require('../utils/format-json')
-const { propertyTypesData } = require('../data/test/index')
+const formatJson = require('../db/utils/format-json')
+const { propertyTypesData } = require('../db/data/test/index')
 
 describe('formatJson', () => {
     test('returns an array when passed no arg', () => {

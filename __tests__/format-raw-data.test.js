@@ -1,6 +1,6 @@
-const formatReviews = require('../utils/format-raw-data')
+const formatReviews = require('../db/utils/format-raw-data')
 const { replacePropertyNamesWithIds, replacePeopleNamesWithIds, sortKeys, extractUniqueAmenities, formatPropertiesAmenitiesData } = formatReviews
-const { reviewsData, propertiesData, usersData, imagesData, favouritesData } = require('../data/test')
+const { reviewsData, propertiesData, usersData, imagesData, favouritesData } = require('../db/data/test')
 
 describe('replacePropertyNamesWithIds', () => {
     test('takes reviews and properties. When passed an array of single review and an array of property with matching name, replaces property_name in review with corresponding property_id', () => {
