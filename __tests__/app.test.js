@@ -98,5 +98,18 @@ describe('app', () => {
             expect(property.hasOwnProperty('host_avatar')).toBe(true)
             expect(property.hasOwnProperty('favourite_count')).toBe(true)
         })
+        describe('Queries', () => {
+            describe('user_id', () => {
+                test('?user_id adds another property, favourited, which is a boolean value representing whether the corresponding user has favourited that property', async () => {
+                    const { body } = await request(app).get('/api/properties/3?user_id=1')
+                    const property = body.property
+                    expect(typeof property.favourited).toBe('boolean')
+                    expect(property.favourited).toBe(false)
+                    const { body: body2 } = await request(app).get('/api/properties/3?user_id=6')
+                    const property2 = body2.property
+                    expect(property2.favourited).toBe(true)
+                })
+            })
+        })
     })
 })

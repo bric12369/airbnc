@@ -14,11 +14,11 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
         values.push(max_price)
         whereConditions.push(`price_per_night <= $${values.length}`)
     }
-    if (min_price && !isNaN(min_price)){ 
+    if (min_price && !isNaN(min_price)) {
         values.push(min_price)
         whereConditions.push(`price_per_night >= $${values.length}`)
     }
-    if (property_type){
+    if (property_type) {
         values.push(property_type[0].toUpperCase() + property_type.substring(1).toLowerCase())
         whereConditions.push(`property_type = $${values.length}`)
     }
@@ -40,27 +40,33 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
     return rows
 }
 
-const fetchSingleProperty = async (id) => {
+const fetchSingleProperty = async (id, user_id) => {
 
     let values = []
     if (!isNaN(id)) values.push(id)
+    if (!isNaN(user_id)) values.push(user_id)
 
     let query = `SELECT properties.property_id,
-    name AS property_name,
-    location,
-    price_per_night,
-    description,
-    CONCAT(first_name, ' ', surname) AS host,
-    users.avatar AS host_avatar,
-    COUNT(favourite_id) AS favourite_count
-    FROM properties
-    JOIN users ON properties.host_id = users.user_id
-    LEFT JOIN favourites ON properties.property_id = favourites.property_id
-    WHERE properties.property_id = $1
-    GROUP BY properties.property_id, name, location, price_per_night, description, users.first_name, users.surname, users.avatar;`
+        name AS property_name,
+        location,
+        price_per_night,
+        description,
+        CONCAT(first_name, ' ', surname) AS host,
+        users.avatar AS host_avatar,
+        COUNT(favourite_id) AS favourite_count`
+
+    if (values.includes(user_id)) {
+        query += `, BOOL_OR(favourites.guest_id = $2) as favourited`
+    }
+
+    query += ` FROM properties
+        JOIN users ON properties.host_id = users.user_id
+        LEFT JOIN favourites ON properties.property_id = favourites.property_id
+        WHERE properties.property_id = $1
+        GROUP BY properties.property_id, name, location, price_per_night, description, users.first_name, users.surname, users.avatar;`
 
     const { rows } = await db.query(query, values)
     return rows[0]
 }
 
-module.exports = {fetchAllProperties, fetchSingleProperty}
+module.exports = { fetchAllProperties, fetchSingleProperty }

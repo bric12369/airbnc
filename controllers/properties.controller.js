@@ -8,7 +8,8 @@ const getAllProperties = async (req, res) => {
 
 const getSingleProperty = async (req, res) => {
     const { id } = req.params
-    const property = await fetchSingleProperty(id)
+    const { user_id } = req.query
+    const property = await fetchSingleProperty(id, user_id)
     res.send({ property })
 }
 
