@@ -8,8 +8,8 @@ const getAllProperties = async (req, res) => {
 
 const getSingleProperty = async (req, res) => {
     const { id } = req.params
-    const properties = await fetchSingleProperty(id)
-    res.send({ properties })
+    const property = await fetchSingleProperty(id)
+    res.send({ property })
 }
 
 module.exports = {getAllProperties, getSingleProperty}

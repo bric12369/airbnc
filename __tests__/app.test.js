@@ -84,12 +84,11 @@ describe('app', () => {
     describe('GET /api/properties/:id', () => {
         test('get request to /api/properties/:id returns one property with matching property_id', async () => {
             const { body } = await request(app).get('/api/properties/3')
-            expect(body.properties.length).toBe(1)
-            expect(body.properties[0].property_id).toBe(3)
+            expect(body.property.property_id).toBe(3)
         })
         test('get request to /api/properties/:id returns an array of single property with the following keys: property_id, property_name, location, price_per_night, description, host, host_avatar and favourite_count', async () => {
             const { body } = await request(app).get('/api/properties/3')
-            const property = body.properties[0]
+            const property = body.property
             expect(property.hasOwnProperty('property_id')).toBe(true)
             expect(property.hasOwnProperty('property_name')).toBe(true)
             expect(property.hasOwnProperty('location')).toBe(true)

@@ -60,7 +60,7 @@ const fetchSingleProperty = async (id) => {
     GROUP BY properties.property_id, name, location, price_per_night, description, users.first_name, users.surname, users.avatar;`
 
     const { rows } = await db.query(query, values)
-    return rows
+    return rows[0]
 }
 
 module.exports = {fetchAllProperties, fetchSingleProperty}
