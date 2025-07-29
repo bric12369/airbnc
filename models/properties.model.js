@@ -40,4 +40,27 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
     return rows
 }
 
-module.exports = fetchAllProperties
+const fetchSingleProperty = async (id) => {
+
+    let values = []
+    if (!isNaN(id)) values.push(id)
+
+    let query = `SELECT properties.property_id,
+    name AS property_name,
+    location,
+    price_per_night,
+    description,
+    CONCAT(first_name, ' ', surname) AS host,
+    users.avatar AS host_avatar,
+    COUNT(favourite_id) AS favourite_count
+    FROM properties
+    JOIN users ON properties.host_id = users.user_id
+    LEFT JOIN favourites ON properties.property_id = favourites.property_id
+    WHERE properties.property_id = $1
+    GROUP BY properties.property_id, name, location, price_per_night, description, users.first_name, users.surname, users.avatar;`
+
+    const { rows } = await db.query(query, values)
+    return rows
+}
+
+module.exports = {fetchAllProperties, fetchSingleProperty}

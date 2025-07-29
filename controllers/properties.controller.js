@@ -1,4 +1,4 @@
-const fetchAllProperties = require('../models/properties.model')
+const {fetchAllProperties, fetchSingleProperty} = require('../models/properties.model')
 
 const getAllProperties = async (req, res) => {
     const { sort, dir, max_price, min_price, property_type } = req.query
@@ -6,4 +6,10 @@ const getAllProperties = async (req, res) => {
     res.send({ properties })
 }
 
-module.exports = getAllProperties
+const getSingleProperty = async (req, res) => {
+    const { id } = req.params
+    const properties = await fetchSingleProperty(id)
+    res.send({ properties })
+}
+
+module.exports = {getAllProperties, getSingleProperty}
