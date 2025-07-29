@@ -66,6 +66,14 @@ describe('app', () => {
                     })
                 })
             })
+            describe('property_type', () => {
+                test('?property_type returns only properties with matching property type', async () => {
+                    const { body } = await request(app).get('/api/properties?property_type=house')
+                    const resultIds = body.properties.map(({property_id}) => property_id)
+                    expect(resultIds.length).toBe(3)
+                    expect(resultIds).toEqual(expect.arrayContaining([2, 7, 10]))
+                })
+            })
         })
     })
 })

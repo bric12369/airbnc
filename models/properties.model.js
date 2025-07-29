@@ -1,7 +1,6 @@
 const db = require('../db/connection')
 
-const fetchAllProperties = async (sort, dir, max_price, min_price) => {
-
+const fetchAllProperties = async (sort, dir, max_price, min_price, property_type) => {
     let orderClause = 'COUNT (favourites.favourite_id)'
     if (sort === 'price_per_night') orderClause = 'price_per_night'
 
@@ -18,6 +17,10 @@ const fetchAllProperties = async (sort, dir, max_price, min_price) => {
     if (min_price && !isNaN(min_price)){ 
         values.push(min_price)
         whereConditions.push(`price_per_night >= $${values.length}`)
+    }
+    if (property_type){
+        values.push(property_type[0].toUpperCase() + property_type.substring(1).toLowerCase())
+        whereConditions.push(`property_type = $${values.length}`)
     }
     if (whereConditions.length) whereClause = 'WHERE ' + whereConditions.join(' AND ')
 
