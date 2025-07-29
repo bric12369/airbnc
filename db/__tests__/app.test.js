@@ -2,6 +2,11 @@ const app = require('../app')
 const request = require('supertest')
 const { toBeOneOf } = require('jest-extended')
 expect.extend({ toBeOneOf })
+const db = require('../connection')
+
+afterAll(() => {
+    db.end()
+})
 
 describe('app', () => {
     describe('GET /api/properties', () => {
