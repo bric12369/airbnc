@@ -3,6 +3,11 @@ const request = require('supertest')
 const { toBeOneOf } = require('jest-extended')
 expect.extend({ toBeOneOf })
 const db = require('../db/connection')
+const seed = require('../db/seed')
+
+beforeEach(() => {
+    return seed()
+})
 
 afterAll(() => {
     db.end()
