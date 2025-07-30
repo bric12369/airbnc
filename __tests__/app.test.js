@@ -159,4 +159,10 @@ describe('app', () => {
             expect(user.hasOwnProperty('created_at')).toBe(true)
         })
     })
+
+    describe('POST /api/properties/:id/reviews', () => {
+        test('successful post request to /api/properties/:id/reviews returns status 201', async () => {
+            await request(app).post('/api/properties/:id/reviews').expect(201)
+        })
+    })
 })
