@@ -14,6 +14,10 @@ afterAll(() => {
 })
 
 describe('app', () => {
+    test('request to an invalid endpoint responds with 404 and a msg', async () => {
+        const { body } = await request(app).get('/invalid-path').expect(404)
+        expect(body.msg).toBe('Path not found')
+    })
     describe('GET /api/properties', () => {
         test('get request to /api/properties returns status 200', async () => {
             await request(app).get('/api/properties').expect(200)
