@@ -142,4 +142,21 @@ describe('app', () => {
             expect(body.average_rating).toBe(4)
         })
     })
+
+    describe('GET /api/users/:id', () => {
+        test('get request to /api/users/:id returns status 200', async () => {
+            await request(app).get('/api/users/3').expect(200)
+        })
+        test('get request to /api/users/:id returns single user with the following properties: user_id, first_name, surname, email, phone_number, avatar, created_at', async () => {
+            const {body} = await request(app).get('/api/users/3')
+            const {user} = body
+            expect(user.hasOwnProperty('user_id')).toBe(true)
+            expect(user.hasOwnProperty('first_name')).toBe(true)
+            expect(user.hasOwnProperty('surname')).toBe(true)
+            expect(user.hasOwnProperty('email')).toBe(true)
+            expect(user.hasOwnProperty('phone_number')).toBe(true)
+            expect(user.hasOwnProperty('avatar')).toBe(true)
+            expect(user.hasOwnProperty('created_at')).toBe(true)
+        })
+    })
 })
