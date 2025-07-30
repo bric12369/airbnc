@@ -1,8 +1,8 @@
 const express = require('express')
-const {getAllProperties, getSingleProperty, getPropertyReviews} = require('./controllers/properties.controller')
+const {getAllProperties, getSingleProperty} = require('./controllers/properties.controller')
 const handleInvalidPath = require('./controllers/errors.controller')
 const getUserDetails = require('./controllers/users.controller')
-const postReview = require('./controllers/reviews.controller')
+const {getPropertyReviews, postReview} = require('./controllers/reviews.controller')
 
 const app = express()
 
