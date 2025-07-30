@@ -5,6 +5,7 @@ const getUserDetails = require('./controllers/users.controller')
 const {getPropertyReviews, postReview} = require('./controllers/reviews.controller')
 
 const app = express()
+app.use(express.json())
 
 app.get('/api/properties', getAllProperties)
 

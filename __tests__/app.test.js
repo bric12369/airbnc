@@ -78,7 +78,7 @@ describe('app', () => {
             describe('property_type', () => {
                 test('?property_type returns only properties with matching property type', async () => {
                     const { body } = await request(app).get('/api/properties?property_type=house')
-                    const resultIds = body.properties.map(({property_id}) => property_id)
+                    const resultIds = body.properties.map(({ property_id }) => property_id)
                     expect(resultIds.length).toBe(3)
                     expect(resultIds).toEqual(expect.arrayContaining([2, 7, 10]))
                 })
@@ -148,8 +148,8 @@ describe('app', () => {
             await request(app).get('/api/users/3').expect(200)
         })
         test('get request to /api/users/:id returns single user with the following properties: user_id, first_name, surname, email, phone_number, avatar, created_at', async () => {
-            const {body} = await request(app).get('/api/users/3')
-            const {user} = body
+            const { body } = await request(app).get('/api/users/3')
+            const { user } = body
             expect(user.hasOwnProperty('user_id')).toBe(true)
             expect(user.hasOwnProperty('first_name')).toBe(true)
             expect(user.hasOwnProperty('surname')).toBe(true)
@@ -161,8 +161,28 @@ describe('app', () => {
     })
 
     describe('POST /api/properties/:id/reviews', () => {
-        test('successful post request to /api/properties/:id/reviews returns status 201', async () => {
-            await request(app).post('/api/properties/:id/reviews').expect(201)
+        test('successful post to /api/properties/:id/reviews adds new review to db and returns status 201', async () => {
+            await request(app).post('/api/properties/3/reviews').send({
+                "guest_id": 2,
+                "rating": 5,
+                "comment": 'Great'
+            }).expect(201)
+            const { body } = await request(app).get('/api/properties/3/reviews')
+            expect(body.reviews.length).toBe(4)
+        })
+        test('successful post to /api/properties/:id/reviews returns inserted review with the following keys: review_id, property_id, guest_id, rating, comment, created_at', async () => {
+            const {body} = await request(app).post('/api/properties/3/reviews').send({
+                "guest_id": 2,
+                "rating": 5,
+                "comment": 'Great'
+            })
+            const {review} = body
+            expect(review.review_id).toBe(17)
+            expect(review.property_id).toBe(3)
+            expect(review.guest_id).toBe(2)
+            expect(review.rating).toBe(5)
+            expect(review.comment).toBe('Great')
+            expect(review.hasOwnProperty('created_at')).toBe(true)
         })
     })
 })

@@ -1,7 +1,7 @@
 const db = require('../db/connection')
 
 const fetchPropertyReviews = async (id) => {
-    
+
     let values = []
     if (!isNaN(id)) values.push(id)
 
@@ -21,4 +21,19 @@ const fetchPropertyReviews = async (id) => {
     return rows
 }
 
-module.exports = {fetchPropertyReviews}
+const insertReview = async (guest_id, rating, comment, id) => {
+
+    let values = []
+    if (!isNaN(id)) values.push(id)
+    if (!isNaN(guest_id)) values.push(guest_id)
+    if (!isNaN(rating)) values.push(rating)
+    values.push(comment)
+
+    const query = `INSERT INTO reviews (property_id, guest_id, rating, comment)
+    VALUES ($1, $2, $3, $4) RETURNING *`
+
+    const { rows } = await db.query(query, values)
+    return rows[0]
+}
+
+module.exports = { fetchPropertyReviews, insertReview }
