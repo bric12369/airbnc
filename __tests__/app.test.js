@@ -81,6 +81,7 @@ describe('app', () => {
             })
         })
     })
+
     describe('GET /api/properties/:id', () => {
         test('get request to /api/properties/:id returns status code 200', async () => {
             await request(app).get('/api/properties/3').expect(200)
@@ -113,6 +114,28 @@ describe('app', () => {
                     expect(property2.favourited).toBe(true)
                 })
             })
+        })
+    })
+
+    describe('GET /api/properties/:id/reviews', () => {
+        test('get request to /api/properties/:id/reviews returns status 200', async () => {
+            await request(app).get('/api/properties/3/reviews').expect(200)
+        })
+        test('get request to /api/properties/:id/reviews returns an array of reviews related to the corresponding property id, each with keys: review_id, comment, rating, created_at, guest, guest_avatar', async () => {
+            const { body } = await request(app).get('/api/properties/3/reviews').expect(200)
+            expect(body.reviews.length).toBe(3)
+            body.reviews.forEach((review) => {
+                expect(review.hasOwnProperty('review_id')).toBe(true)
+                expect(review.hasOwnProperty('comment')).toBe(true)
+                expect(review.hasOwnProperty('rating')).toBe(true)
+                expect(review.hasOwnProperty('created_at')).toBe(true)
+                expect(review.hasOwnProperty('guest')).toBe(true)
+                expect(review.hasOwnProperty('guest_avatar')).toBe(true)
+            })
+        })
+        test('get request to /api/properties/:id/reviews also returns an average_rating property which calculates the average rating of body.reviews', async () => {
+            const { body } = await request(app).get('/api/properties/3/reviews')
+            expect(body.average_rating).toBe(4)
         })
     })
 })
