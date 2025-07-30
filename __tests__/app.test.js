@@ -82,6 +82,9 @@ describe('app', () => {
         })
     })
     describe('GET /api/properties/:id', () => {
+        test('get request to /api/properties/:id returns status code 200', async () => {
+            await request(app).get('/api/properties/3').expect(200)
+        })
         test('get request to /api/properties/:id returns one property with matching property_id', async () => {
             const { body } = await request(app).get('/api/properties/3')
             expect(body.property.property_id).toBe(3)
