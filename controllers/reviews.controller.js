@@ -1,4 +1,4 @@
-const { fetchPropertyReviews, insertReview } = require('../models/reviews.model')
+const { fetchPropertyReviews, insertReview, fetchReviews, removeReview } = require('../models/reviews.model')
 
 const getPropertyReviews = async (req, res) => {
     const { id } = req.params
@@ -14,4 +14,15 @@ const postReview = async (req, res) => {
     res.status(201).send({ review })
 }
 
-module.exports = {postReview, getPropertyReviews}
+const getReviews = async (req, res) => {
+    const reviews = await fetchReviews()
+    res.send({reviews})
+}
+
+const deleteReview = async (req, res) => {
+    const { id } = req.params
+    await removeReview(id)
+    res.status(204).send()
+}
+
+module.exports = {postReview, getPropertyReviews, getReviews, deleteReview}

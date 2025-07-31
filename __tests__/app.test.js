@@ -185,4 +185,28 @@ describe('app', () => {
             expect(review.hasOwnProperty('created_at')).toBe(true)
         })
     })
+
+    describe('GET /api/reviews', () => {
+        test('get request to /api/reviews returns status code 200 and array of reviews with following keys: review_id, property_name, guest, rating, comment, created_at', async () => {
+            const { body } = await request(app).get('/api/reviews').expect(200)
+            body.reviews.forEach((review) => {
+                expect(review.hasOwnProperty('review_id')).toBe(true)
+                expect(review.hasOwnProperty('property_name')).toBe(true)
+                expect(review.hasOwnProperty('guest')).toBe(true)
+                expect(review.hasOwnProperty('rating')).toBe(true)
+                expect(review.hasOwnProperty('comment')).toBe(true)
+                expect(review.hasOwnProperty('created_at')).toBe(true)
+            })
+        })
+    })
+
+    describe('DELETE /api/reviews/:id', () => {
+        test('successful delete request to /api/reviews/:id returns status code 204 and deletes corresponding review from reviews table', async () => {
+            const { body } = await request(app).get('/api/reviews')
+            expect(body.reviews.some(review => review.review_id === 3)).toBe(true)
+            await request(app).delete('/api/reviews/3').expect(204)
+            const { body: afterDelete } = await request(app).get('/api/reviews')
+            expect(afterDelete.reviews.some(review => review.review_id === 3)).toBe(false)
+        })
+    })
 })

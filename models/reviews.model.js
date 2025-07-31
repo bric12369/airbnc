@@ -36,4 +36,33 @@ const insertReview = async (guest_id, rating, comment, id) => {
     return rows[0]
 }
 
-module.exports = { fetchPropertyReviews, insertReview }
+const fetchReviews = async () => {
+    const { rows } = await db.query(`
+        SELECT review_id,
+        name as property_name,
+        CONCAT(first_name, ' ', surname) as guest,
+        rating,
+        comment,
+        reviews.created_at
+        FROM reviews
+        JOIN properties on reviews.property_id = properties.property_id
+        JOIN users on reviews.guest_id = users.user_id;
+        `)
+    return rows
+}
+
+const removeReview = async (id) => {
+
+    let values = []
+    if (!isNaN(id)) values.push(id)
+
+    await db.query(
+        `DELETE from reviews
+        WHERE review_id = $1`,
+        values
+    )
+
+    return
+}
+
+module.exports = { fetchPropertyReviews, insertReview, fetchReviews, removeReview }
