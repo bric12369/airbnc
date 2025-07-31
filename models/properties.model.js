@@ -46,8 +46,8 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
 const fetchSingleProperty = async (id, user_id) => {
 
     let values = []
-    if (!isNaN(id)) values.push(id)
-    if (!isNaN(user_id)) values.push(user_id)
+    if (id) values.push(id)
+    if (user_id) values.push(user_id)
 
     let query = `SELECT properties.property_id,
         name AS property_name,
@@ -69,6 +69,9 @@ const fetchSingleProperty = async (id, user_id) => {
         GROUP BY properties.property_id, name, location, price_per_night, description, users.first_name, users.surname, users.avatar;`
 
     const { rows } = await db.query(query, values)
+    if (!rows.length) {
+        return Promise.reject({status: 404, msg: 'Property not found'})
+    }
     return rows[0]
 }
 

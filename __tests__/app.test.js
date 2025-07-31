@@ -123,6 +123,14 @@ describe('app', () => {
             expect(property.hasOwnProperty('host_avatar')).toBe(true)
             expect(property.hasOwnProperty('favourite_count')).toBe(true)
         })
+        test('returns 404 and msg when passed an id which does not exist', async () => {
+            const { body } = await request(app).get('/api/properties/1000').expect(404)
+            expect(body.msg).toBe('Property not found')
+        })
+        test('returns 400 and msg when passed invalid data type', async () => {
+            const { body } = await request(app).get('/api/properties/not-a-number').expect(400)
+            expect(body.msg).toBe('Bad request')
+        })
         describe('Queries', () => {
             describe('user_id', () => {
                 test('?user_id adds another property, favourited, which is a boolean value representing whether the corresponding user has favourited that property', async () => {
