@@ -16,6 +16,9 @@ const fetchUser = async (id) => {
         FROM users
         WHERE user_id = $1`, values)
     
+    if (!rows.length) {
+        return Promise.reject({status: 404, msg: 'User not found'})
+    }
     return rows[0]
 }
 

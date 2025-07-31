@@ -1,10 +1,14 @@
 const { fetchUser } = require('../models/users.model')
 
 
-const getUserDetails = async (req, res) => {
+const getUserDetails = async (req, res, next) => {
     const { id } = req.params
-    const user = await fetchUser(id)
-    res.send({user})
+    try {
+        const user = await fetchUser(id)
+        res.send({user})
+    } catch (error) {
+        next(error)
+    }
 }
 
 module.exports = getUserDetails

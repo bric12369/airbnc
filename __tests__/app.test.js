@@ -183,6 +183,14 @@ describe('app', () => {
             expect(user.hasOwnProperty('avatar')).toBe(true)
             expect(user.hasOwnProperty('created_at')).toBe(true)
         })
+        test('returns 404 and msg when passed a user_id which does not exist', async () => {
+            const { body } = await request(app).get('/api/users/1000').expect(404)
+            expect(body.msg).toBe('User not found')
+        })
+        test('returns 400 and msg when passed invalid data type', async () => {
+            const { body } = await request(app).get('/api/users/not-a-number').expect(400)
+            expect(body.msg).toBe('Bad request')
+        })
     })
 
     describe('POST /api/properties/:id/reviews', () => {
