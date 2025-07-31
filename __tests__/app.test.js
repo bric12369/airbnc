@@ -66,6 +66,10 @@ describe('app', () => {
                         expect(property.price_per_night <= 100).toBe(true)
                     })
                 })
+                test('returns status 400 with msg Bad request when max_price is not a number', async () => {
+                    const { body } = await request(app).get('/api/properties?max_price=not_a_number').expect(400)
+                    expect(body.msg).toBe('Bad request')
+                })
             })
             describe('min_price', () => {
                 test('?min_price limits returned properties by min price', async () => {

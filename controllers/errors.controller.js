@@ -3,4 +3,8 @@ const handleInvalidPath = (req, res) => {
     res.status(404).send({ msg: 'Path not found' })
 }
 
-module.exports = handleInvalidPath
+const handleBadRequest = (err, req, res, next) => {
+    res.status(400).send({ msg: 'Bad request' })
+}
+
+module.exports = {handleInvalidPath, handleBadRequest}

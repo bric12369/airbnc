@@ -10,11 +10,11 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
     let whereClause = ''
     const whereConditions = []
     const values = []
-    if (max_price && !isNaN(max_price)) {
+    if (max_price) {
         values.push(max_price)
         whereConditions.push(`price_per_night <= $${values.length}`)
     }
-    if (min_price && !isNaN(min_price)) {
+    if (min_price) {
         values.push(min_price)
         whereConditions.push(`price_per_night >= $${values.length}`)
     }

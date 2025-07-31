@@ -2,8 +2,12 @@ const { fetchAllProperties, fetchSingleProperty } = require('../models/propertie
 
 const getAllProperties = async (req, res) => {
     const { sort, dir, max_price, min_price, property_type } = req.query
-    const properties = await fetchAllProperties(sort, dir, max_price, min_price, property_type)
-    res.send({ properties })
+    try {
+        const properties = await fetchAllProperties(sort, dir, max_price, min_price, property_type)
+        res.send({ properties })
+    } catch (error) {
+        next(error)
+    }
 }
 
 const getSingleProperty = async (req, res) => {
