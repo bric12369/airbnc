@@ -94,6 +94,11 @@ describe('app', () => {
                     expect(resultIds.length).toBe(3)
                     expect(resultIds).toEqual(expect.arrayContaining([2, 7, 10]))
                 })
+                test('returns status 404 and msg when passed a property type which does not exist', async () => {
+                    const { body } = await request(app).get('/api/properties?property_type=non-existent-property-type')
+                    expect(404)
+                    expect(body.msg).toBe('Properties not found')
+                })
             })
         })
     })
