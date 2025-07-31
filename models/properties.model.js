@@ -37,6 +37,9 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
         GROUP BY properties.property_id, name, location, price_per_night, users.first_name, users.surname
         ORDER BY ${orderClause} ${directionClause};`, values
     )
+    if (!rows.length) {
+        return Promise.reject({status: 404, msg: 'Properties not found'})
+    }
     return rows
 }
 

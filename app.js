@@ -1,6 +1,6 @@
 const express = require('express')
 const {getAllProperties, getSingleProperty} = require('./controllers/properties.controller')
-const {handleInvalidPath, handleBadRequest} = require('./controllers/errors.controller')
+const {handleInvalidPath, handleBadRequest, handleCustomErrors} = require('./controllers/errors.controller')
 const getUserDetails = require('./controllers/users.controller')
 const {getPropertyReviews, postReview, deleteReview, getReviews} = require('./controllers/reviews.controller')
 
@@ -24,5 +24,6 @@ app.delete('/api/reviews/:id', deleteReview)
 app.all('/*invalid', handleInvalidPath)
 
 app.use(handleBadRequest)
+app.use(handleCustomErrors)
 
 module.exports = app

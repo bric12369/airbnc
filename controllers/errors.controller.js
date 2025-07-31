@@ -4,7 +4,16 @@ const handleInvalidPath = (req, res) => {
 }
 
 const handleBadRequest = (err, req, res, next) => {
-    res.status(400).send({ msg: 'Bad request' })
+    if (err.code) {
+        res.status(400).send({ msg: 'Bad request' })
+    } else {
+        next(err)
+    }
 }
 
-module.exports = {handleInvalidPath, handleBadRequest}
+const handleCustomErrors = async (err, req, res, next) => {
+    
+    res.status(err.status).send({msg: err.msg})
+}
+
+module.exports = {handleInvalidPath, handleBadRequest, handleCustomErrors}
