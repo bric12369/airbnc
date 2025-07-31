@@ -78,6 +78,10 @@ describe('app', () => {
                         expect(property.price_per_night >= 100).toBe(true)
                     })
                 })
+                test('returns status 400 with msg Bad request when min_price is not a number', async () => {
+                    const { body } = await request(app).get('/api/properties?min_price=not_a_number').expect(400)
+                    expect(body.msg).toBe('Bad request')
+                })
             })
             describe('property_type', () => {
                 test('?property_type returns only properties with matching property type', async () => {
@@ -175,12 +179,12 @@ describe('app', () => {
             expect(body.reviews.length).toBe(4)
         })
         test('successful post to /api/properties/:id/reviews returns inserted review with the following keys: review_id, property_id, guest_id, rating, comment, created_at', async () => {
-            const {body} = await request(app).post('/api/properties/3/reviews').send({
+            const { body } = await request(app).post('/api/properties/3/reviews').send({
                 "guest_id": 2,
                 "rating": 5,
                 "comment": 'Great'
             })
-            const {review} = body
+            const { review } = body
             expect(review.review_id).toBe(17)
             expect(review.property_id).toBe(3)
             expect(review.guest_id).toBe(2)
