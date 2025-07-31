@@ -142,6 +142,14 @@ describe('app', () => {
                     const property2 = body2.property
                     expect(property2.favourited).toBe(true)
                 })
+                test('returns 404 and msg when passed a user_id which does not exist', async () => {
+                    const { body } = await request(app).get('/api/properties/3?user_id=1000').expect(404)
+                    expect(body.msg).toBe('User not found')
+                })
+                test('returns 400 and msg when passed invalid data type', async () => {
+                    const { body } = await request(app).get('/api/properties/3?user_id=not-a-number').expect(400)
+                    expect(body.msg).toBe('Bad request')
+                })
             })
         })
     })
