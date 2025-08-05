@@ -53,6 +53,11 @@ describe('app', () => {
                     expect(body.properties[0].property_id).toBeOneOf([4, 11])
                     expect(body.properties[body.properties.length - 1].property_id).toBe(2)
                 })
+                test('dir only accepts asc/ASC, otherwise results are ordered desc by default', async () => {
+                    const { body } = await request(app).get('/api/properties?dir=not-asc')
+                    expect(body.properties[0].property_id).toBe(2)
+                    expect(body.properties[body.properties.length - 1].property_id).toBeOneOf([4, 11])
+                })
                 test('?dir=asc chains onto ?sort=cost_per_night to order from lowest to highest cost_per_night', async () => {
                     const { body } = await request(app).get('/api/properties?sort=price_per_night&dir=asc')
                     expect(body.properties[body.properties.length - 1].property_id).toBe(6)
