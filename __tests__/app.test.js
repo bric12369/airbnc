@@ -175,6 +175,10 @@ describe('app', () => {
                 expect(review.hasOwnProperty('guest_avatar')).toBe(true)
             })
         })
+        test('if the corresponding property exists but has no reviews, 200 is returned along with a message', async () => {
+            const { body } = await request(app).get('/api/properties/2/reviews').expect(200)
+            expect(body.msg).toBe('This property currently has no reviews available.')
+        })
         test('get request to /api/properties/:id/reviews also returns an average_rating property which calculates the average rating of body.reviews', async () => {
             const { body } = await request(app).get('/api/properties/3/reviews')
             expect(body.average_rating).toBe(4)

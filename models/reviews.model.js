@@ -18,6 +18,9 @@ const fetchPropertyReviews = async (id) => {
     ORDER BY reviews.created_at;`
 
     const { rows } = await db.query(query, values)
+    if (!rows.length) {
+        return Promise.reject({ status: 200, msg: 'This property currently has no reviews available.' })
+    }
     return rows
 }
 
