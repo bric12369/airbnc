@@ -183,6 +183,14 @@ describe('app', () => {
             const { body } = await request(app).get('/api/properties/3/reviews')
             expect(body.average_rating).toBe(4)
         })
+        test('returns 404 and msg when passed an id which does not exist', async () => {
+            const { body } = await request(app).get('/api/properties/1000/reviews').expect(404)
+            expect(body.msg).toBe('Property not found')
+        })
+        test('returns 400 and msg when passed invalid data type', async () => {
+            const { body } = await request(app).get('/api/properties/not-a-number/reviews').expect(400)
+            expect(body.msg).toBe('Bad request')
+        })
     })
 
     describe('GET /api/users/:id', () => {
