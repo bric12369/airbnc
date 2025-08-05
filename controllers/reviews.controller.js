@@ -14,11 +14,16 @@ const getPropertyReviews = async (req, res, next) => {
     }
 }
 
-const postReview = async (req, res) => {
+const postReview = async (req, res, next) => {
     const { guest_id, rating, comment } = req.body
     const { id } = req.params
-    const review = await insertReview(guest_id, rating, comment, id)
-    res.status(201).send({ review })
+    try {
+        await fetchSingleProperty(id)
+        const review = await insertReview(guest_id, rating, comment, id)
+        res.status(201).send({ review })
+    } catch (error) {
+        next(error)
+    }
 }
 
 const getReviews = async (req, res) => {

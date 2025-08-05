@@ -242,6 +242,22 @@ describe('app', () => {
             expect(review.comment).toBe('Great')
             expect(review.hasOwnProperty('created_at')).toBe(true)
         })
+        test('returns 404 and msg when passed an id which does not exist', async () => {
+            const { body } = await request(app).post('/api/properties/1000/reviews').send({
+                "guest_id": 2,
+                "rating": 5,
+                "comment": 'Great'
+            }).expect(404)
+            expect(body.msg).toBe('Property not found')
+        })
+        test('returns 400 and msg when passed invalid data type', async () => {
+            const { body } = await request(app).post('/api/properties/not-a-number/reviews').send({
+                "guest_id": 2,
+                "rating": 5,
+                "comment": 'Great'
+            }).expect(400)
+            expect(body.msg).toBe('Bad request')
+        })
     })
 
     describe('GET /api/reviews', () => {
