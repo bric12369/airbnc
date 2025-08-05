@@ -1,5 +1,4 @@
 const db = require('../db/connection')
-const { fetchUser } = require('./users.model')
 
 const fetchAllProperties = async (sort, dir, max_price, min_price, property_type) => {
     let orderClause = 'COUNT (favourites.favourite_id)'
@@ -48,10 +47,7 @@ const fetchSingleProperty = async (id, user_id) => {
 
     let values = []
     if (id) values.push(id)
-    if (user_id) {
-        await fetchUser(user_id)
-        values.push(user_id)
-    }
+    if (user_id) values.push(user_id)
 
     let query = `SELECT properties.property_id,
         name AS property_name,
