@@ -274,6 +274,26 @@ describe('app', () => {
         })
     })
 
+    describe('GET /api/reviews/:id', () => {
+        test('get request to /api/reviews/:id returns status code 200 and a single review with the following properties: review_id, property_name, guest, rating, comment, created_at', async () => {
+            const { body } = await request(app).get('/api/reviews/3').expect(200)
+            expect(body.review.hasOwnProperty('review_id')).toBe(true)
+            expect(body.review.hasOwnProperty('property_name')).toBe(true)
+            expect(body.review.hasOwnProperty('guest')).toBe(true)
+            expect(body.review.hasOwnProperty('rating')).toBe(true)
+            expect(body.review.hasOwnProperty('comment')).toBe(true)
+            expect(body.review.hasOwnProperty('created_at')).toBe(true)
+        })
+        test('returns 404 and msg when passed a review_id which does not exist', async () => {
+            const { body } = await request(app).get('/api/reviews/1000').expect(404)
+            expect(body.msg).toBe('Review not found')
+        })
+        test('returns 400 and msg when passed invalid data type', async () => {
+            const { body } = await request(app).get('/api/reviews/not-a-number').expect(400)
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+
     describe('DELETE /api/reviews/:id', () => {
         test('successful delete request to /api/reviews/:id returns status code 204 and deletes corresponding review from reviews table', async () => {
             const { body } = await request(app).get('/api/reviews')
@@ -281,6 +301,14 @@ describe('app', () => {
             await request(app).delete('/api/reviews/3').expect(204)
             const { body: afterDelete } = await request(app).get('/api/reviews')
             expect(afterDelete.reviews.some(review => review.review_id === 3)).toBe(false)
+        })
+        test('returns 404 and msg when passed a review_id which does not exist', async () => {
+            const { body } = await request(app).delete('/api/reviews/1000').expect(404)
+            expect(body.msg).toBe('Review not found')
+        })
+        test('returns 400 and msg when passed invalid data type', async () => {
+            const { body } = await request(app).delete('/api/reviews/not-a-number').expect(400)
+            expect(body.msg).toBe('Bad request')
         })
     })
 })

@@ -1,5 +1,5 @@
 const { fetchSingleProperty } = require('../models/properties.model')
-const { fetchPropertyReviews, insertReview, fetchReviews, removeReview } = require('../models/reviews.model')
+const { fetchPropertyReviews, insertReview, fetchReviews, removeReview, fetchSingleReview } = require('../models/reviews.model')
 
 const getPropertyReviews = async (req, res, next) => {
     const { id } = req.params
@@ -31,10 +31,25 @@ const getReviews = async (req, res) => {
     res.send({ reviews })
 }
 
-const deleteReview = async (req, res) => {
+const deleteReview = async (req, res, next) => {
     const { id } = req.params
-    await removeReview(id)
-    res.status(204).send()
+    try {
+        await fetchSingleReview(id)
+        await removeReview(id)
+        res.status(204).send()
+    } catch (error) {
+        next(error)
+    }
 }
 
-module.exports = { postReview, getPropertyReviews, getReviews, deleteReview }
+const getSingleReview = async (req, res, next) => {
+    const { id } = req.params
+    try {
+        const review = await fetchSingleReview(id)
+        res.send({review})
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { postReview, getPropertyReviews, getReviews, deleteReview, getSingleReview }
