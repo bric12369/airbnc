@@ -2,8 +2,7 @@ const db = require('../db/connection')
 
 const fetchPropertyReviews = async (id) => {
 
-    let values = []
-    if (!isNaN(id)) values.push(id)
+    const values = [id]
 
     let query = `SELECT review_id, 
     comment, 
@@ -26,11 +25,14 @@ const fetchPropertyReviews = async (id) => {
 
 const insertReview = async (guest_id, rating, comment, id) => {
 
-    let values = []
-    if (!isNaN(id)) values.push(id)
-    if (!isNaN(guest_id)) values.push(guest_id)
-    if (!isNaN(rating)) values.push(rating)
-    values.push(comment)
+    if (
+        guest_id && typeof guest_id !== 'number' ||
+        rating && typeof rating !== 'number'
+    ) {
+        return Promise.reject({status: 400, msg: 'Bad request: Payload includes invalid data type'})
+    }
+
+    const values = [id, guest_id, rating, comment]
 
     const query = `INSERT INTO reviews (property_id, guest_id, rating, comment)
     VALUES ($1, $2, $3, $4) RETURNING *`
@@ -56,8 +58,7 @@ const fetchReviews = async () => {
 
 const removeReview = async (id) => {
 
-    let values = []
-    if (!isNaN(id)) values.push(id)
+    const values = [id]
 
     await db.query(
         `DELETE from reviews
@@ -70,8 +71,7 @@ const removeReview = async (id) => {
 
 const fetchSingleReview = async (id) => {
 
-    let values = []
-    if (!isNaN(id)) values.push(id)
+    const values = [id]
 
         
         const {rows} = await db.query(`

@@ -3,8 +3,7 @@ const db = require('../db/connection')
 
 const fetchUser = async (id) => {
 
-    let values = []
-    if (!isNaN(id)) values.push(id)
+    const values = [id]
 
     const { rows } = await db.query(`SELECT user_id,
         first_name,

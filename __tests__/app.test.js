@@ -250,13 +250,28 @@ describe('app', () => {
             }).expect(404)
             expect(body.msg).toBe('Property not found')
         })
-        test('returns 400 and msg when passed invalid data type', async () => {
+        test('returns 400 and msg when passed invalid data type for id', async () => {
             const { body } = await request(app).post('/api/properties/not-a-number/reviews').send({
                 "guest_id": 2,
                 "rating": 5,
                 "comment": 'Great'
             }).expect(400)
             expect(body.msg).toBe('Bad request')
+        })
+        test('returns 400 and msg when payload contains an invalid data type', async () => {
+            const { body } = await request(app).post('/api/properties/3/reviews').send({
+                "guest_id": 'not-a-number',
+                "rating": 5,
+                "comment": 'Great'
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: Payload includes invalid data type')
+        })
+        test('returns 400 and msg when payload missing a not null variable', async () => {
+            const { body } = await request(app).post('/api/properties/3/reviews').send({
+                "rating": 5,
+                "comment": 'Great'
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: Please provide all required values')
         })
     })
 
