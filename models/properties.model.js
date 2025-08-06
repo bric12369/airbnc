@@ -29,12 +29,20 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
         name AS property_name,
         location,
         price_per_night,
-        CONCAT(first_name, ' ', surname) AS host
+        CONCAT(first_name, ' ', surname) AS host,
+        img.image_url AS image
         FROM properties
         JOIN users ON properties.host_id = users.user_id
         LEFT JOIN favourites ON properties.property_id = favourites.property_id
+        LEFT JOIN Lateral (
+            SELECT image_url
+            FROM images
+            WHERE images.property_id = properties.property_id
+            ORDER BY image_id
+            LIMIT 1
+        ) img ON true
         ${whereClause}
-        GROUP BY properties.property_id, name, location, price_per_night, users.first_name, users.surname
+        GROUP BY properties.property_id, name, location, price_per_night, users.first_name, users.surname, img.image_url
         ORDER BY ${orderClause} ${directionClause};`, values
     )
     if (!rows.length) {

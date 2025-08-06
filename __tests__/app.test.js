@@ -34,6 +34,13 @@ describe('app', () => {
                 expect(property.hasOwnProperty('host')).toBe(true)
             })
         })
+        test('each property has an image field equal to the first image associated with that property', async () => {
+            const { body } = await request(app).get('/api/properties')
+            const property1 = body.properties.find(property => property.property_id === 1)
+            expect(property1.image).toBe('https://example.com/images/modern_apartment_1.jpg')
+            const property2 = body.properties.find(property => property.property_id === 2)
+            expect(property2.image).toBe('https://example.com/images/cosy_family_house_1.jpg')
+        })
         describe('Queries', () => {
             describe('sort', () => {
                 test('properties are ordered from most favourited to least by default', async () => {
