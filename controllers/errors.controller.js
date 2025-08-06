@@ -5,7 +5,7 @@ const handleInvalidPath = (req, res) => {
 
 const handleBadRequest = (err, req, res, next) => {
     if (err.code === '22P02') {
-        res.status(400).send({ msg: 'Bad request' })
+        res.status(400).send({ msg: 'Bad request: invalid data type' })
     } else if (err.code === '23502') {
         res.status(400).send({ msg: 'Bad request: Please provide all required values' })
     } else {

@@ -14,11 +14,11 @@ const fetchUser = async (id) => {
         created_at
         FROM users
         WHERE user_id = $1`, values)
-    
+
     if (!rows.length) {
-        return Promise.reject({status: 404, msg: 'User not found'})
+        return Promise.reject({ status: 404, msg: 'User not found' })
     }
     return rows[0]
 }
 
-module.exports = {fetchUser}
+module.exports = { fetchUser }

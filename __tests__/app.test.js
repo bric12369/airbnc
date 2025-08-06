@@ -80,7 +80,7 @@ describe('app', () => {
                 })
                 test('returns status 400 with msg Bad request when max_price is not a number', async () => {
                     const { body } = await request(app).get('/api/properties?max_price=not_a_number').expect(400)
-                    expect(body.msg).toBe('Bad request')
+                    expect(body.msg).toBe('Bad request: invalid data type')
                 })
                 test('returns status 404 with msg properties not found when max_price is a valid number, but lower than the lowest cost_per_night', async () => {
                     const { body } = await request(app).get('/api/properties?max_price=1').expect(404)
@@ -96,7 +96,7 @@ describe('app', () => {
                 })
                 test('returns status 400 with msg Bad request when min_price is not a number', async () => {
                     const { body } = await request(app).get('/api/properties?min_price=not_a_number').expect(400)
-                    expect(body.msg).toBe('Bad request')
+                    expect(body.msg).toBe('Bad request: invalid data type')
                 })
             })
             describe('property_type', () => {
@@ -148,7 +148,7 @@ describe('app', () => {
         })
         test('returns 400 and msg when passed invalid data type', async () => {
             const { body } = await request(app).get('/api/properties/not-a-number').expect(400)
-            expect(body.msg).toBe('Bad request')
+            expect(body.msg).toBe('Bad request: invalid data type')
         })
         describe('Queries', () => {
             describe('user_id', () => {
@@ -167,7 +167,7 @@ describe('app', () => {
                 })
                 test('returns 400 and msg when passed invalid data type', async () => {
                     const { body } = await request(app).get('/api/properties/3?user_id=not-a-number').expect(400)
-                    expect(body.msg).toBe('Bad request')
+                    expect(body.msg).toBe('Bad request: invalid data type')
                 })
             })
         })
@@ -203,7 +203,7 @@ describe('app', () => {
         })
         test('returns 400 and msg when passed invalid data type', async () => {
             const { body } = await request(app).get('/api/properties/not-a-number/reviews').expect(400)
-            expect(body.msg).toBe('Bad request')
+            expect(body.msg).toBe('Bad request: invalid data type')
         })
     })
 
@@ -228,7 +228,7 @@ describe('app', () => {
         })
         test('returns 400 and msg when passed invalid data type', async () => {
             const { body } = await request(app).get('/api/users/not-a-number').expect(400)
-            expect(body.msg).toBe('Bad request')
+            expect(body.msg).toBe('Bad request: invalid data type')
         })
     })
 
@@ -270,7 +270,7 @@ describe('app', () => {
                 "rating": 5,
                 "comment": 'Great'
             }).expect(400)
-            expect(body.msg).toBe('Bad request')
+            expect(body.msg).toBe('Bad request: invalid data type')
         })
         test('returns 400 and msg when payload contains an invalid data type', async () => {
             const { body } = await request(app).post('/api/properties/3/reviews').send({
@@ -319,7 +319,7 @@ describe('app', () => {
         })
         test('returns 400 and msg when passed invalid data type', async () => {
             const { body } = await request(app).get('/api/reviews/not-a-number').expect(400)
-            expect(body.msg).toBe('Bad request')
+            expect(body.msg).toBe('Bad request: invalid data type')
         })
     })
 
@@ -337,7 +337,7 @@ describe('app', () => {
         })
         test('returns 400 and msg when passed invalid data type', async () => {
             const { body } = await request(app).delete('/api/reviews/not-a-number').expect(400)
-            expect(body.msg).toBe('Bad request')
+            expect(body.msg).toBe('Bad request: invalid data type')
         })
     })
 
@@ -353,6 +353,34 @@ describe('app', () => {
             })
             expect(body.msg).toBe('Property favourited successfully')
             expect(body.favourite_id).toBe(16)
+        })
+        test('returns 400 and msg when passed invalid propertyid data type', async () => {
+            const { body } = await request(app).post('/api/properties/not-a-number/favourite').send({
+                'guest_id': 2
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: invalid data type')
+        })
+        test('returns 404 and msg when passed propertyid which does not exist', async () => {
+            const { body } = await request(app).post('/api/properties/1000/favourite').send({
+                'guest_id': 2
+            }).expect(404)
+            expect(body.msg).toBe('Property not found')
+        })
+        test('returns 400 when guest_id invalid', async () => {
+            const { body } = await request(app).post('/api/properties/1/favourite').send({
+                'guest_id': 'not-a-number'
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: invalid data type')
+        })
+        test('returns 404 when guest_id does not exist', async () => {
+            const { body } = await request(app).post('/api/properties/1/favourite').send({
+                'guest_id': 1000
+            }).expect(404)
+            expect(body.msg).toBe('User not found')
+        })
+        test('returns 400 when payload missing a not null variable', async () => {
+            const { body } = await request(app).post('/api/properties/1/favourite').send({}).expect(400)
+            expect(body.msg).toBe('Bad request: Please provide all required values')            
         })
     })
 })
