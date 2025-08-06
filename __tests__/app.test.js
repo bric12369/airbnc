@@ -340,4 +340,19 @@ describe('app', () => {
             expect(body.msg).toBe('Bad request')
         })
     })
+
+    describe('POST /api/properties/:id/favourite', () => {
+        test('successful post request to /api/properties/:id/favourites responds with status 201', async () => {
+            await request(app).post('/api/properties/1/favourite').send({
+                'guest_id': 2
+            }).expect(201)
+        })
+        test('successful post request to /api/properties/:id/favourites responds with msg and favourite_id', async () => {
+            const { body } = await request(app).post('/api/properties/1/favourite').send({
+                'guest_id': 2
+            })
+            expect(body.msg).toBe('Property favourited successfully')
+            expect(body.favourite_id).toBe(16)
+        })
+    })
 })
