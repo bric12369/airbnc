@@ -70,9 +70,11 @@ const fetchSingleProperty = async (id, user_id) => {
         query += `, BOOL_OR(favourites.guest_id = $2) as favourited`
     }
 
-    query += ` FROM properties
+    query += `, ARRAY_AGG(DISTINCT images.image_url) as images
+        FROM properties
         JOIN users ON properties.host_id = users.user_id
         LEFT JOIN favourites ON properties.property_id = favourites.property_id
+        LEFT JOIN images on images.property_id = properties.property_id
         WHERE properties.property_id = $1
         GROUP BY properties.property_id, name, location, price_per_night, description, users.first_name, users.surname, users.avatar;`
 

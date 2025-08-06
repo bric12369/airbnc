@@ -135,6 +135,13 @@ describe('app', () => {
             expect(property.hasOwnProperty('host_avatar')).toBe(true)
             expect(property.hasOwnProperty('favourite_count')).toBe(true)
         })
+        test('property has an image property equal to an array of all associated images', async () => {
+            const { body } = await request(app).get('/api/properties/1')
+            expect(body.property.images.length).toBe(3)
+            expect(Array.isArray(body.property.images)).toBe(true)
+            const { body: body2 } = await request(app).get('/api/properties/2')
+            expect(body2.property.images.length).toBe(1)
+        })
         test('returns 404 and msg when passed an id which does not exist', async () => {
             const { body } = await request(app).get('/api/properties/1000').expect(404)
             expect(body.msg).toBe('Property not found')
