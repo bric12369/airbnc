@@ -48,7 +48,7 @@ describe('app', () => {
                     expect(body.properties[0].property_id).toBe(2)
                     expect(body.properties[body.properties.length - 1].property_id).toBeOneOf([4, 11])
                 })
-                test('?sort=cost_per_night orders properties from highest cost_per_night to lowest', async () => {
+                test('?sort=price_per_night orders properties from highest cost_per_night to lowest', async () => {
                     const { body } = await request(app).get('/api/properties?sort=price_per_night')
                     expect(body.properties[0].property_id).toBe(6)
                     expect(body.properties[body.properties.length - 1].property_id).toBe(5)
@@ -131,6 +131,30 @@ describe('app', () => {
                     const { body } = await request(app).get('/api/properties?host_id=2').expect(200)
                     expect(body.msg).toBe('This user currently has no properties')
                 })
+            })
+        })
+        describe('Queries: Combinations', () => {
+            test('returns properties filtered by type, min and max prices', async () => {
+                const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180')
+                houses.properties.forEach((property) => {
+                    expect(property.property_name).toBeOneOf(['Cosy Family House', 'Quaint Cottage in the Hills'])
+                    expect(property.price_per_night >= 150 && property.price_per_night <= 180).toBe(true)
+                })
+                const { body: apartments } = await request(app).get('/api/properties?min_price=130&property_type=apartment&max_price=200')
+                expect(apartments.properties.length).toBe(1)
+                expect(apartments.properties[0].price_per_night >= 130 &&
+                    apartments.properties[0].price_per_night <= 200
+                ).toBe(true)
+            })
+            test('returns properties filtered by type, min and max prices and orders by cost', async () => {
+                const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180&sort=price_per_night')
+                expect(houses.properties[0].property_name).toBe('Quaint Cottage in the Hills')
+                expect(houses.properties[1].property_name).toBe('Cosy Family House')
+            })
+            test('returns properties filtered by type, min and max prices and orders by cost in ascending order', async () => {
+                const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180&sort=price_per_night&dir=asc')
+                expect(houses.properties[0].property_name).toBe('Cosy Family House')
+                expect(houses.properties[1].property_name).toBe('Quaint Cottage in the Hills')
             })
         })
     })
