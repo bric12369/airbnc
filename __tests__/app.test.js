@@ -119,6 +119,18 @@ describe('app', () => {
                         expect(property.host).toBe('Alice Johnson')
                     })
                 })
+                test('returns 400 when host id is invalid', async () => {
+                    const { body } = await request(app).get('/api/properties?host_id=not-a-number').expect(400)
+                    expect(body.msg).toBe('Bad request: invalid data type')
+                })
+                test('returns 404 when host id does not exist', async () => {
+                    const { body } = await request(app).get('/api/properties?host_id=1000').expect(404)
+                    expect(body.msg).toBe('User not found')
+                })
+                test('returns 200 when host id valid and exists but no properties associated', async () => {
+                    const { body } = await request(app).get('/api/properties?host_id=2').expect(200)
+                    expect(body.msg).toBe('This user currently has no properties')
+                })
             })
         })
     })

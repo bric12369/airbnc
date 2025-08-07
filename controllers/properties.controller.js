@@ -4,6 +4,7 @@ const { fetchUser } = require('../models/users.model')
 const getAllProperties = async (req, res, next) => {
     const { sort, dir, max_price, min_price, property_type, host_id } = req.query
     try {
+        if (host_id) await fetchUser(host_id)
         const properties = await fetchAllProperties(sort, dir, max_price, min_price, property_type, host_id)
         res.send({ properties })
     } catch (error) {

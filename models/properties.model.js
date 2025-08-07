@@ -50,7 +50,11 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
         ORDER BY ${orderClause} ${directionClause};`, values
     )
     if (!rows.length) {
-        return Promise.reject({status: 404, msg: 'Properties not found'})
+        if (host_id) {
+            return Promise.reject({status: 200, msg: 'This user currently has no properties'})
+        } else {
+            return Promise.reject({status: 404, msg: 'Properties not found'})
+        }
     }
     
     return rows
