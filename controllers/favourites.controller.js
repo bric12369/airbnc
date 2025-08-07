@@ -1,4 +1,4 @@
-const { insertFavourite } = require("../models/favourites.model")
+const { insertFavourite, removeFavourite } = require("../models/favourites.model")
 const { fetchSingleProperty } = require("../models/properties.model")
 const { fetchUser } = require("../models/users.model")
 
@@ -15,4 +15,10 @@ const postFavourite = async (req, res, next) => {
     }
 }
 
-module.exports = { postFavourite }
+const deleteFavourite = async (req, res) => {
+    const { property_id, user_id } = req.params
+    await removeFavourite(property_id, user_id)
+    res.status(204).send()
+}
+
+module.exports = { postFavourite, deleteFavourite }

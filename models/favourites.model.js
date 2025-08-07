@@ -11,4 +11,18 @@ const insertFavourite = async (property_id, guest_id) => {
     return rows[0].favourite_id
 }
 
-module.exports = { insertFavourite }
+const removeFavourite = async (property_id, guest_id) => {
+
+    const values = [property_id, guest_id]
+
+    await db.query(`
+        DELETE FROM favourites
+        WHERE
+        property_id = $1 AND
+        guest_id = $2
+        `, values)
+    
+    return
+}
+
+module.exports = { insertFavourite, removeFavourite }

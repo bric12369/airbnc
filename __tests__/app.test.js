@@ -380,7 +380,17 @@ describe('app', () => {
         })
         test('returns 400 when payload missing a not null variable', async () => {
             const { body } = await request(app).post('/api/properties/1/favourite').send({}).expect(400)
-            expect(body.msg).toBe('Bad request: Please provide all required values')            
+            expect(body.msg).toBe('Bad request: Please provide all required values')
+        })
+    })
+
+    describe('DELETE /api/properties/:property_id/users/:user_id/favourite', () => {
+        test('successful delete request to api/properties/:property_id/users/:user_id/favourite returns 204 and deletes corresponding review', async () => {
+            const { rows: beforeDelete } = await db.query(`SELECT * FROM favourites WHERE property_id = $1 AND guest_id = $2`, [1, 6])
+            await request(app).delete('/api/properties/1/users/6/favourite').expect(204)
+            const { rows: afterDelete } = await db.query(`SELECT * FROM favourites WHERE property_id = $1 AND guest_id = $2`, [1, 6])
+            expect(beforeDelete.length).toBe(1)
+            expect(afterDelete.length).toBe(0)
         })
     })
 })
