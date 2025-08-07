@@ -1,4 +1,4 @@
-const { fetchUser } = require('../models/users.model')
+const { fetchUser, updateUserDetails } = require('../models/users.model')
 
 
 const getUserDetails = async (req, res, next) => {
@@ -11,4 +11,11 @@ const getUserDetails = async (req, res, next) => {
     }
 }
 
-module.exports = getUserDetails
+const patchUserDetails = async (req, res) => {
+    const { id } = req.params
+    const { first_name, surname, email, phone_number, avatar } = req.body
+    const user = await updateUserDetails(id, first_name, surname, email, phone_number, avatar )
+    res.send({user})
+}
+
+module.exports = {getUserDetails, patchUserDetails}

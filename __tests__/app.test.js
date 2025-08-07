@@ -451,4 +451,29 @@ describe('app', () => {
             expect(body.msg).toBe('User not found')
         })
     })
+
+    describe('PATCH /api/users/:id', () => {
+        test('successful patch request to /api/users/:id returns status 200 and updates when given one column to update in payload', async () => {
+            const { body } = await request(app).patch('/api/users/1').send({
+                "first_name": 'Barry'
+            }).expect(200)
+            expect(body.user.first_name).toBe('Barry')
+        })
+        test('can successfully update multiple columns at once', async () => {
+            const { body } = await request(app).patch('/api/users/1').send({
+                "first_name": 'Barry',
+                "phone_number": '+41 7000 111111'
+            })
+            expect(body.user.first_name).toBe('Barry')
+            expect(body.user.phone_number).toBe('+41 7000 111111') 
+            const { body: body2 } = await request(app).patch('/api/users/1').send({
+                "phone_number": '29',
+                "email": 'hello@hello.com',
+                "surname": 'Jack'
+            })   
+            expect(body2.user.surname).toBe('Jack')
+            expect(body2.user.phone_number).toBe('29')
+            expect(body2.user.email).toBe('hello@hello.com')      
+        })
+    })
 })

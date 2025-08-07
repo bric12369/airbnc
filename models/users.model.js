@@ -21,4 +21,26 @@ const fetchUser = async (id) => {
     return rows[0]
 }
 
-module.exports = { fetchUser }
+const updateUserDetails = async (id, first_name, surname, email, phone_number, avatar) => {
+    
+    const possibleArgs = { first_name, surname, email, phone_number, avatar }
+    const filteredArgs = Object.fromEntries(Object.entries(possibleArgs).filter(([_, value]) => value !== undefined))
+    const values = [id]
+
+    const setClauses = []
+
+    for (const key in filteredArgs) {
+        values.push(filteredArgs[key])
+        setClauses.push(`${key} = $${values.length}`)
+    }
+
+    const { rows } = await db.query(`
+        UPDATE users
+        SET ${setClauses.join(', ')}
+        WHERE user_id = $1
+        RETURNING *
+        `, values)
+    return rows[0]
+}
+
+module.exports = { fetchUser, updateUserDetails }

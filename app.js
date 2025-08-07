@@ -1,7 +1,7 @@
 const express = require('express')
 const {getAllProperties, getSingleProperty} = require('./controllers/properties.controller')
 const {handleInvalidPath, handleBadRequest, handleCustomErrors} = require('./controllers/errors.controller')
-const getUserDetails = require('./controllers/users.controller')
+const {getUserDetails, patchUserDetails} = require('./controllers/users.controller')
 const {getPropertyReviews, postReview, deleteReview, getReviews, getSingleReview} = require('./controllers/reviews.controller')
 const { postFavourite, deleteFavourite } = require('./controllers/favourites.controller')
 
@@ -27,6 +27,8 @@ app.delete('/api/reviews/:id', deleteReview)
 app.post('/api/properties/:id/favourite', postFavourite)
 
 app.delete('/api/properties/:property_id/users/:user_id/favourite', deleteFavourite)
+
+app.patch('/api/users/:id', patchUserDetails)
 
 app.all('/*invalid', handleInvalidPath)
 
