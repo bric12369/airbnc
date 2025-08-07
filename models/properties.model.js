@@ -1,6 +1,6 @@
 const db = require('../db/connection')
 
-const fetchAllProperties = async (sort, dir, max_price, min_price, property_type) => {
+const fetchAllProperties = async (sort, dir, max_price, min_price, property_type, host_id) => {
     let orderClause = 'COUNT (favourites.favourite_id)'
     if (sort === 'price_per_night') orderClause = 'price_per_night'
 
@@ -21,6 +21,10 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
     if (property_type) {
         values.push(property_type[0].toUpperCase() + property_type.substring(1).toLowerCase())
         whereConditions.push(`property_type = $${values.length}`)
+    }
+    if (host_id) {
+        values.push(host_id)
+        whereConditions.push(`host_id = $${values.length}`)
     }
     if (whereConditions.length) whereClause = 'WHERE ' + whereConditions.join(' AND ')
 
@@ -48,6 +52,7 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
     if (!rows.length) {
         return Promise.reject({status: 404, msg: 'Properties not found'})
     }
+    
     return rows
 }
 

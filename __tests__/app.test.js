@@ -112,6 +112,14 @@ describe('app', () => {
                     expect(body.msg).toBe('Properties not found')
                 })
             })
+            describe('host_id', () => {
+                test('?host_id returns only the properties with matching host id', async () => {
+                    const { body } = await request(app).get('/api/properties?host_id=1').expect(200)
+                    body.properties.forEach((property) => {
+                        expect(property.host).toBe('Alice Johnson')
+                    })
+                })
+            })
         })
     })
 
