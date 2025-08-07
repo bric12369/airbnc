@@ -34,6 +34,10 @@ const updateUserDetails = async (id, first_name, surname, email, phone_number, a
         setClauses.push(`${key} = $${values.length}`)
     }
 
+    if (!setClauses.length) {
+        return Promise.reject({status: 400, msg: 'Bad request: no fields provided to update'})
+    }
+
     const { rows } = await db.query(`
         UPDATE users
         SET ${setClauses.join(', ')}

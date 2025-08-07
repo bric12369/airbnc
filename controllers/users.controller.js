@@ -11,11 +11,16 @@ const getUserDetails = async (req, res, next) => {
     }
 }
 
-const patchUserDetails = async (req, res) => {
+const patchUserDetails = async (req, res, next) => {
     const { id } = req.params
     const { first_name, surname, email, phone_number, avatar } = req.body
-    const user = await updateUserDetails(id, first_name, surname, email, phone_number, avatar )
-    res.send({user})
+    try{
+        const user = await updateUserDetails(id, first_name, surname, email, phone_number, avatar )
+        res.send({user})
+    } catch(error) {
+        console.log(error)
+        next(error)
+    }
 }
 
 module.exports = {getUserDetails, patchUserDetails}

@@ -473,7 +473,11 @@ describe('app', () => {
             })   
             expect(body2.user.surname).toBe('Jack')
             expect(body2.user.phone_number).toBe('29')
-            expect(body2.user.email).toBe('hello@hello.com')      
+            expect(body2.user.email).toBe('hello@hello.com') 
+        })
+        test('returns 400 when nothing provided to update', async () => {
+            const { body } = await request(app).patch('/api/users/1').send({}).expect(400)
+            expect(body.msg).toBe('Bad request: no fields provided to update')
         })
     })
 })
