@@ -15,10 +15,16 @@ const postFavourite = async (req, res, next) => {
     }
 }
 
-const deleteFavourite = async (req, res) => {
+const deleteFavourite = async (req, res, next) => {
     const { property_id, user_id } = req.params
-    await removeFavourite(property_id, user_id)
-    res.status(204).send()
+    try{
+        await fetchSingleProperty(property_id)
+        await fetchUser(user_id)
+        await removeFavourite(property_id, user_id)
+        res.status(204).send()
+    } catch (error) {
+        next(error)
+    }
 }
 
 module.exports = { postFavourite, deleteFavourite }

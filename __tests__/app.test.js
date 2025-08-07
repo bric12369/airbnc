@@ -392,5 +392,19 @@ describe('app', () => {
             expect(beforeDelete.length).toBe(1)
             expect(afterDelete.length).toBe(0)
         })
+        test('returns 400 when property_id or user_id invalid', async () => {
+            const { body } = await request(app).delete('/api/properties/not-a-number/users/6/favourite').expect(400)
+            expect(body.msg).toBe('Bad request: invalid data type')
+            const { body: body2 } = await request(app).delete('/api/properties/1/users/not-a-number/favourite').expect(400)
+            expect(body2.msg).toBe('Bad request: invalid data type')
+        })
+        test('returns 404 when property_id does not exist', async () => {
+            const { body } = await request(app).delete('/api/properties/1000/users/6/favourite').expect(404)
+            expect(body.msg).toBe('Property not found')
+        })
+        test('returns 404 when user_id does not exist', async () => {
+            const { body } = await request(app).delete('/api/properties/1/users/1000/favourite').expect(404)
+            expect(body.msg).toBe('User not found')
+        })
     })
 })
