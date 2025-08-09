@@ -1,0 +1,17 @@
+const db = require('../db/connection')
+
+const fetchBookings = async (property_id) => {
+
+    const { rows } = await db.query(`
+        SELECT booking_id, 
+        check_in_date, 
+        check_out_date, 
+        created_at
+        FROM bookings
+        WHERE property_id = $1
+        `, [property_id])
+
+    return rows
+}
+
+module.exports = { fetchBookings }

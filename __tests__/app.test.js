@@ -480,4 +480,20 @@ describe('app', () => {
             expect(body.msg).toBe('Bad request: no fields provided to update')
         })
     })
+    describe('GET /api/properties/:id/bookings', () => {
+        test('returns status 200 and an array of bookings, each with the following properties: booking_id, check_in_date, check_out_date and created_at', async () => {
+            const { body } = await request(app).get('/api/properties/1/bookings').expect(200)
+            expect(body.bookings.length > 0).toBe(true)
+            body.bookings.forEach((booking) => {
+                expect(booking.hasOwnProperty('booking_id')).toBe(true)
+                expect(booking.hasOwnProperty('check_in_date')).toBe(true)
+                expect(booking.hasOwnProperty('check_out_date')).toBe(true)
+                expect(booking.hasOwnProperty('created_at')).toBe(true)
+            })
+        })
+        test('body also contains property_id property', async () => {
+            const { body } = await request(app).get('/api/properties/1/bookings')
+            expect(body.property_id).toBe(1)
+        })
+    })
 })

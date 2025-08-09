@@ -4,6 +4,7 @@ const {handleInvalidPath, handleBadRequest, handleCustomErrors} = require('./con
 const {getUserDetails, patchUserDetails} = require('./controllers/users.controller')
 const {getPropertyReviews, postReview, deleteReview, getReviews, getSingleReview} = require('./controllers/reviews.controller')
 const { postFavourite, deleteFavourite } = require('./controllers/favourites.controller')
+const { getBookings } = require('./controllers/bookings.controller')
 
 const app = express()
 app.use(express.json())
@@ -29,6 +30,8 @@ app.post('/api/properties/:id/favourite', postFavourite)
 app.delete('/api/properties/:property_id/users/:user_id/favourite', deleteFavourite)
 
 app.patch('/api/users/:id', patchUserDetails)
+
+app.get('/api/properties/:id/bookings', getBookings)
 
 app.all('/*invalid', handleInvalidPath)
 
