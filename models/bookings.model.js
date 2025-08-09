@@ -20,16 +20,7 @@ const fetchBookings = async (property_id) => {
 
 const insertBooking = async (property_id, guest_id, check_in_date, check_out_date) => {
 
-    const today = new Date()
-    const checkIn = new Date(check_in_date)
-    const checkOut = new Date(check_out_date)
-
-    if (checkIn < today || checkOut < today) {
-        return Promise.reject({ status: 400, msg: 'Bad request: check in/check out cannot be in the past' })
-    }
-    if (checkIn > checkOut) {
-        return Promise.reject({ status: 400, msg: 'Bad request: check out must be after check in' })        
-    }
+    await checkValidDates(check_in_date, check_out_date)
 
     const values = [property_id, guest_id, check_in_date, check_out_date]
 
@@ -43,6 +34,16 @@ const insertBooking = async (property_id, guest_id, check_in_date, check_out_dat
 
 const removeBooking = async (booking_id) => {
 
+    await db.query(`
+        DELETE FROM bookings 
+        WHERE booking_id = $1
+        `, [booking_id])
+    
+    return
+}
+
+const checkBookingById = async (booking_id) => {
+
     const { rows: bookings } = await db.query(`
         SELECT * FROM bookings
         WHERE booking_id = $1
@@ -52,15 +53,12 @@ const removeBooking = async (booking_id) => {
         return Promise.reject({status: 404, msg: 'Booking not found'})
     }
 
-    await db.query(`
-        DELETE FROM bookings 
-        WHERE booking_id = $1
-        `, [booking_id])
-    
-    return
+    return bookings[0]
 }
 
 const updateBooking = async (booking_id, check_in_date, check_out_date) =>{
+
+    await checkValidDates(check_in_date, check_out_date)
 
     const values = [booking_id]
     const setClauses = []
@@ -74,7 +72,6 @@ const updateBooking = async (booking_id, check_in_date, check_out_date) =>{
         setClauses.push(`check_out_date = $${values.length}`)
     }
 
-
     const { rows } = await db.query(`
         UPDATE bookings
         SET ${setClauses.join(', ')}
@@ -85,4 +82,18 @@ const updateBooking = async (booking_id, check_in_date, check_out_date) =>{
     return rows[0]
 }
 
-module.exports = { fetchBookings, insertBooking, removeBooking, updateBooking }
+const checkValidDates = (check_in_date, check_out_date) => {
+    
+    const today = new Date()
+    const checkIn = new Date(check_in_date)
+    const checkOut = new Date(check_out_date)
+
+    if (checkIn < today || checkOut < today) {
+        return Promise.reject({ status: 400, msg: 'Bad request: check in/check out cannot be in the past' })
+    }
+    if (checkIn > checkOut) {
+        return Promise.reject({ status: 400, msg: 'Bad request: check out must be after check in' })        
+    }
+}
+
+module.exports = { fetchBookings, insertBooking, removeBooking, updateBooking, checkBookingById }

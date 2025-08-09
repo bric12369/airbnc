@@ -557,8 +557,8 @@ describe('app', () => {
                 'guest_id': 1000,
                 'check_in_date': '2025-11-11',
                 'check_out_date': '2025-12-12'
-            }).expect(404)    
-            expect(body2.msg).toBe('User not found')        
+            }).expect(404)
+            expect(body2.msg).toBe('User not found')
         })
         test('returns 400 when payload missing a not null variable', async () => {
             const { body } = await request(app).post('/api/properties/1/bookings').send({
@@ -577,14 +577,14 @@ describe('app', () => {
                 'guest_id': 1,
                 'check_in_date': '2024-11-11',
                 'check_out_date': '2025-12-12'
-            }).expect(400)    
+            }).expect(400)
             expect(body.msg).toBe('Bad request: check in/check out cannot be in the past')
             const { body: body2 } = await request(app).post('/api/properties/1/bookings').send({
                 'guest_id': 1,
                 'check_in_date': '2025-12-13',
                 'check_out_date': '2025-12-12'
-            }).expect(400)    
-            expect(body2.msg).toBe('Bad request: check out must be after check in')               
+            }).expect(400)
+            expect(body2.msg).toBe('Bad request: check out must be after check in')
         })
         test('returns 400 when provided invalid date', async () => {
             const { body } = await request(app).post('/api/properties/1/bookings').send({
@@ -601,8 +601,8 @@ describe('app', () => {
             const { rows: beforeDelete } = await db.query(`SELECT * FROM bookings WHERE booking_id = 1;`)
             expect(beforeDelete.length).toBe(1)
             await request(app).delete('/api/bookings/1').expect(204)
-            const { rows: afterDelete } = await db.query(`SELECT * FROM bookings WHERE booking_id = 1;`)  
-            expect(afterDelete.length).toBe(0)          
+            const { rows: afterDelete } = await db.query(`SELECT * FROM bookings WHERE booking_id = 1;`)
+            expect(afterDelete.length).toBe(0)
         })
         test('returns 400 when booking_id invalid', async () => {
             const { body } = await request(app).delete('/api/bookings/not-a-number').expect(400)
@@ -620,10 +620,57 @@ describe('app', () => {
                 "check_in_date": '2025-12-02',
                 "check_out_date": '2025-12-31'
             }).expect(200)
-            console.log(body)
             expect(body.booking.booking_id).toBe(1)
             expect(body.booking.check_in_date).toMatch(/^2025-12-02/)
             expect(body.booking.check_out_date).toMatch(/^2025-12-31/)
+        })
+        test('returns 400 when booking_id or anything in payload is invalid', async () => {
+            const { body } = await request(app).patch('/api/bookings/not-a-number').send({
+                "check_in_date": '2025-12-02',
+                "check_out_date": '2025-12-31'
+            }).expect(400)
+            const { body: body2 } = await request(app).patch('/api/bookings/1').send({
+                "check_in_date": 'not-a-number',
+                "check_out_date": '2025-12-31'
+            }).expect(400)
+            const { body: body3 } = await request(app).patch('/api/bookings/1').send({
+                "check_in_date": '2025-12-02',
+                "check_out_date": 'not-a-number'
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: invalid data type')
+            expect(body2.msg).toBe('Bad request: invalid data type')
+            expect(body3.msg).toBe('Bad request: invalid data type')
+        })
+        test('returns 404 when booking_id does not exist', async () => {
+            const { body } = await request(app).patch('/api/bookings/1000').send({
+                "check_in_date": '2025-12-02',
+                "check_out_date": '2025-12-31'
+            }).expect(404)  
+            expect(body.msg).toBe('Booking not found')          
+        })
+        test('returns 400 when provided invalid date', async () => {
+            const { body } = await request(app).patch('/api/bookings/1').send({
+                "check_in_date": '2025-55-66',
+                "check_out_date": '2025-12-31'
+            }).expect(400)       
+            expect(body.msg).toBe('Bad request: invalid date provided')       
+        })
+        test('returns 400 when check in or check out is in the past', async () => {
+            const { body } = await request(app).patch('/api/bookings/1').send({
+                "check_in_date": '2023-11-11',
+                "check_out_date": '2025-12-31'
+            }).expect(400)   
+            expect(body.msg).toBe('Bad request: check in/check out cannot be in the past')        
+        })
+        test('returns 400 if only one date to update is provided which attempts to place check out before check in', async () => {
+            const { body } = await request(app).patch('/api/bookings/1').send({
+                "check_in_date": '2025-12-12',
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: check out must be after check in')    
+        })
+        test('returns 400 if nothing provided to update', async () => {
+            const { body } = await request(app).patch('/api/bookings/1').send({}).expect(400)
+            expect(body.msg).toBe('Bad request: no fields provided to update')               
         })
     })
 })
