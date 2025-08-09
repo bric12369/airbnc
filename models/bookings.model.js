@@ -42,6 +42,16 @@ const insertBooking = async (property_id, guest_id, check_in_date, check_out_dat
 }
 
 const removeBooking = async (booking_id) => {
+
+    const { rows: bookings } = await db.query(`
+        SELECT * FROM bookings
+        WHERE booking_id = $1
+        `, [booking_id])
+    
+    if (!bookings.length) {
+        return Promise.reject({status: 404, msg: 'Booking not found'})
+    }
+
     await db.query(`
         DELETE FROM bookings 
         WHERE booking_id = $1

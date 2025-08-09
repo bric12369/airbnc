@@ -604,5 +604,13 @@ describe('app', () => {
             const { rows: afterDelete } = await db.query(`SELECT * FROM bookings WHERE booking_id = 1;`)  
             expect(afterDelete.length).toBe(0)          
         })
+        test('returns 400 when booking_id invalid', async () => {
+            const { body } = await request(app).delete('/api/bookings/not-a-number').expect(400)
+            expect(body.msg).toBe('Bad request: invalid data type')
+        })
+        test('returns 404 when booking_id does not exist', async () => {
+            const { body } = await request(app).delete('/api/bookings/1000').expect(404)
+            expect(body.msg).toBe('Booking not found')
+        })
     })
 })

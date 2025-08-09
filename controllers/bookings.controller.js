@@ -30,8 +30,12 @@ const postBooking = async (req, res, next) => {
 
 const deleteBooking = async (req, res, next) => {
     const { id } = req.params
-    removeBooking(id)
-    res.status(204).send()
+    try {
+        await removeBooking(id)
+        res.status(204).send()
+    } catch (error) {
+        next(error)
+    }
 }
 
 module.exports = { getBookings, postBooking, deleteBooking }
