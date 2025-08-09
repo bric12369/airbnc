@@ -480,6 +480,7 @@ describe('app', () => {
             expect(body.msg).toBe('Bad request: no fields provided to update')
         })
     })
+
     describe('GET /api/properties/:id/bookings', () => {
         test('returns status 200 and an array of bookings, each with the following properties: booking_id, check_in_date, check_out_date and created_at', async () => {
             const { body } = await request(app).get('/api/properties/1/bookings').expect(200)
@@ -507,5 +508,17 @@ describe('app', () => {
             const { body } = await request(app).get('/api/properties/1000/bookings').expect(404)
             expect(body.msg).toBe('Property not found')  
         })    
+    })
+
+    describe('POST /api/properties/:id/bookings', () => {
+        test('returns 201 with msg and booking_id upon successful post', async () => {
+            const { body } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 1,
+                'check_in_date': '2025-11-11',
+                'check_out_date': '2025-12-12' 
+            }).expect(201)
+            expect(body.booking_id).toBe(11)
+            expect(body.msg).toBe('Booking successful')
+        })
     })
 })

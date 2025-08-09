@@ -1,4 +1,4 @@
-const { fetchBookings } = require("../models/bookings.model")
+const { fetchBookings, insertBooking } = require("../models/bookings.model")
 const { fetchSingleProperty } = require("../models/properties.model")
 
 
@@ -14,4 +14,11 @@ const getBookings = async (req, res, next) => {
     }
 }
 
-module.exports = { getBookings }
+const postBooking = async (req, res) => {
+    const { id } = req.params
+    const { guest_id, check_in_date, check_out_date } = req.body
+    const booking_id = await insertBooking(id, guest_id, check_in_date, check_out_date)
+    res.status(201).send({booking_id, msg: 'Booking successful'})
+}
+
+module.exports = { getBookings, postBooking }

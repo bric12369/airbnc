@@ -18,4 +18,16 @@ const fetchBookings = async (property_id) => {
     return rows
 }
 
-module.exports = { fetchBookings }
+const insertBooking = async (property_id, guest_id, check_in_date, check_out_date) => {
+    
+    const values = [property_id, guest_id, check_in_date, check_out_date]
+    
+    const { rows } = await db.query(`
+        INSERT INTO bookings (property_id, guest_id, check_in_date, check_out_date)
+        VALUES ($1, $2, $3, $4) RETURNING *
+        `, values)
+
+    return rows[0].booking_id
+}
+
+module.exports = { fetchBookings, insertBooking }
