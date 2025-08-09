@@ -11,6 +11,10 @@ const fetchBookings = async (property_id) => {
         WHERE property_id = $1
         `, [property_id])
 
+    if (!rows.length) {
+        return Promise.reject({ status: 200, msg: 'This property has no bookings at this time' })
+    }
+
     return rows
 }
 

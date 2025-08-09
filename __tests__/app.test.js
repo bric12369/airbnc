@@ -495,5 +495,17 @@ describe('app', () => {
             const { body } = await request(app).get('/api/properties/1/bookings')
             expect(body.property_id).toBe(1)
         })
+        test('returns status 200 and a msg if property_id exists but no bookings associated', async () => {
+            const { body } = await request(app).get('/api/properties/11/bookings').expect(200)
+            expect(body.msg).toBe('This property has no bookings at this time')
+        })
+        test('returns 400 when property_id invalid', async () => {
+            const { body } = await request(app).get('/api/properties/not-a-number/bookings').expect(400)
+            expect(body.msg).toBe('Bad request: invalid data type')
+        })
+        test('returns 404 when property_id does not exist', async () => {
+            const { body } = await request(app).get('/api/properties/1000/bookings').expect(404)
+            expect(body.msg).toBe('Property not found')  
+        })    
     })
 })
