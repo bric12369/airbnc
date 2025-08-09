@@ -18,7 +18,6 @@ const patchUserDetails = async (req, res, next) => {
         const user = await updateUserDetails(id, first_name, surname, email, phone_number, avatar )
         res.send({user})
     } catch(error) {
-        console.log(error)
         next(error)
     }
 }

@@ -465,15 +465,15 @@ describe('app', () => {
                 "phone_number": '+41 7000 111111'
             })
             expect(body.user.first_name).toBe('Barry')
-            expect(body.user.phone_number).toBe('+41 7000 111111') 
+            expect(body.user.phone_number).toBe('+41 7000 111111')
             const { body: body2 } = await request(app).patch('/api/users/1').send({
                 "phone_number": '29',
                 "email": 'hello@hello.com',
                 "surname": 'Jack'
-            })   
+            })
             expect(body2.user.surname).toBe('Jack')
             expect(body2.user.phone_number).toBe('29')
-            expect(body2.user.email).toBe('hello@hello.com') 
+            expect(body2.user.email).toBe('hello@hello.com')
         })
         test('returns 400 when nothing provided to update', async () => {
             const { body } = await request(app).patch('/api/users/1').send({}).expect(400)
@@ -506,8 +506,8 @@ describe('app', () => {
         })
         test('returns 404 when property_id does not exist', async () => {
             const { body } = await request(app).get('/api/properties/1000/bookings').expect(404)
-            expect(body.msg).toBe('Property not found')  
-        })    
+            expect(body.msg).toBe('Property not found')
+        })
     })
 
     describe('POST /api/properties/:id/bookings', () => {
@@ -515,10 +515,84 @@ describe('app', () => {
             const { body } = await request(app).post('/api/properties/1/bookings').send({
                 'guest_id': 1,
                 'check_in_date': '2025-11-11',
-                'check_out_date': '2025-12-12' 
+                'check_out_date': '2025-12-12'
             }).expect(201)
             expect(body.booking_id).toBe(11)
             expect(body.msg).toBe('Booking successful')
+        })
+        test('returns 400 when property_id or anything in payload is invalid', async () => {
+            const { body } = await request(app).post('/api/properties/not-a-number/bookings').send({
+                'guest_id': 1,
+                'check_in_date': '2025-11-11',
+                'check_out_date': '2025-12-12'
+            }).expect(400)
+            const { body: body2 } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 'not-a-number',
+                'check_in_date': '2025-11-11',
+                'check_out_date': '2025-12-12'
+            }).expect(400)
+            const { body: body3 } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 1,
+                'check_in_date': 'not-a-date',
+                'check_out_date': '2025-12-12'
+            }).expect(400)
+            const { body: body4 } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 1,
+                'check_in_date': '2025-11-11',
+                'check_out_date': 'not-a-date'
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: invalid data type')
+            expect(body2.msg).toBe('Bad request: invalid data type')
+            expect(body3.msg).toBe('Bad request: invalid data type')
+            expect(body4.msg).toBe('Bad request: invalid data type')
+        })
+        test('returns 404 when property_id or guest_id does not exist', async () => {
+            const { body } = await request(app).post('/api/properties/1000/bookings').send({
+                'guest_id': 1,
+                'check_in_date': '2025-11-11',
+                'check_out_date': '2025-12-12'
+            }).expect(404)
+            expect(body.msg).toBe('Property not found')
+            const { body: body2 } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 1000,
+                'check_in_date': '2025-11-11',
+                'check_out_date': '2025-12-12'
+            }).expect(404)    
+            expect(body2.msg).toBe('User not found')        
+        })
+        test('returns 400 when payload missing a not null variable', async () => {
+            const { body } = await request(app).post('/api/properties/1/bookings').send({
+                'check_in_date': '2025-11-11',
+                'check_out_date': '2025-12-12'
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: Please provide all required values')
+            const { body: body2 } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 1,
+                'check_out_date': '2025-12-12'
+            }).expect(400)
+            expect(body2.msg).toBe('Bad request: Please provide all required values')
+        })
+        test('returns 400 if check in or check out is in the past, or if check out is before check in', async () => {
+            const { body } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 1,
+                'check_in_date': '2024-11-11',
+                'check_out_date': '2025-12-12'
+            }).expect(400)    
+            expect(body.msg).toBe('Bad request: check in/check out cannot be in the past')
+            const { body: body2 } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 1,
+                'check_in_date': '2025-12-13',
+                'check_out_date': '2025-12-12'
+            }).expect(400)    
+            expect(body2.msg).toBe('Bad request: check out must be after check in')               
+        })
+        test('returns 400 when provided invalid date', async () => {
+            const { body } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 1,
+                'check_in_date': '2025-55-66',
+                'check_out_date': '2025-12-12'
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: invalid date provided')
         })
     })
 })
