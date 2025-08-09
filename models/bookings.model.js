@@ -41,4 +41,13 @@ const insertBooking = async (property_id, guest_id, check_in_date, check_out_dat
     return rows[0].booking_id
 }
 
-module.exports = { fetchBookings, insertBooking }
+const removeBooking = async (booking_id) => {
+    await db.query(`
+        DELETE FROM bookings 
+        WHERE booking_id = $1
+        `, [booking_id])
+    
+    return
+}
+
+module.exports = { fetchBookings, insertBooking, removeBooking }

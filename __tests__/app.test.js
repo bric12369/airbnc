@@ -595,4 +595,14 @@ describe('app', () => {
             expect(body.msg).toBe('Bad request: invalid date provided')
         })
     })
+
+    describe('DELETE /api/bookings/:id', () => {
+        test('returns 204 upon successfull deletion', async () => {
+            const { rows: beforeDelete } = await db.query(`SELECT * FROM bookings WHERE booking_id = 1;`)
+            expect(beforeDelete.length).toBe(1)
+            await request(app).delete('/api/bookings/1').expect(204)
+            const { rows: afterDelete } = await db.query(`SELECT * FROM bookings WHERE booking_id = 1;`)  
+            expect(afterDelete.length).toBe(0)          
+        })
+    })
 })
