@@ -613,4 +613,17 @@ describe('app', () => {
             expect(body.msg).toBe('Booking not found')
         })
     })
+
+    describe('PATCH /api/bookings/:id', () => {
+        test('returns 200 and updates all properties of row after successful update', async () => {
+            const { body } = await request(app).patch('/api/bookings/1').send({
+                "check_in_date": '2025-12-02',
+                "check_out_date": '2025-12-31'
+            }).expect(200)
+            console.log(body)
+            expect(body.booking.booking_id).toBe(1)
+            expect(body.booking.check_in_date).toMatch(/^2025-12-02/)
+            expect(body.booking.check_out_date).toMatch(/^2025-12-31/)
+        })
+    })
 })

@@ -1,4 +1,4 @@
-const { fetchBookings, insertBooking, removeBooking } = require("../models/bookings.model")
+const { fetchBookings, insertBooking, removeBooking, updateBooking } = require("../models/bookings.model")
 const { fetchSingleProperty } = require("../models/properties.model")
 const { fetchUser } = require("../models/users.model")
 
@@ -38,4 +38,11 @@ const deleteBooking = async (req, res, next) => {
     }
 }
 
-module.exports = { getBookings, postBooking, deleteBooking }
+const patchBooking = async (req, res, next) => {
+    const { id } = req.params
+    const { check_in_date, check_out_date } = req.body
+    const booking = await updateBooking(id, check_in_date, check_out_date)
+    res.send({booking})
+}
+
+module.exports = { getBookings, postBooking, deleteBooking, patchBooking }

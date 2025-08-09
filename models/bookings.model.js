@@ -60,4 +60,29 @@ const removeBooking = async (booking_id) => {
     return
 }
 
-module.exports = { fetchBookings, insertBooking, removeBooking }
+const updateBooking = async (booking_id, check_in_date, check_out_date) =>{
+
+    const values = [booking_id]
+    const setClauses = []
+
+    if (check_in_date) {
+        values.push(check_in_date)
+        setClauses.push(`check_in_date = $${values.length}`)
+    }
+    if (check_out_date) {
+        values.push(check_out_date)
+        setClauses.push(`check_out_date = $${values.length}`)
+    }
+
+
+    const { rows } = await db.query(`
+        UPDATE bookings
+        SET ${setClauses.join(', ')}
+        WHERE booking_id = $1
+        RETURNING *
+        `, values)
+    
+    return rows[0]
+}
+
+module.exports = { fetchBookings, insertBooking, removeBooking, updateBooking }
