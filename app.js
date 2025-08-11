@@ -5,9 +5,12 @@ const {getUserDetails, patchUserDetails} = require('./controllers/users.controll
 const {getPropertyReviews, postReview, deleteReview, getReviews, getSingleReview} = require('./controllers/reviews.controller')
 const { postFavourite, deleteFavourite } = require('./controllers/favourites.controller')
 const { getBookings, postBooking, deleteBooking, patchBooking } = require('./controllers/bookings.controller')
+const { serveIndex } = require('./controllers/index.controller')
 
 const app = express()
 app.use(express.json())
+
+app.get('/', serveIndex)
 
 app.get('/api/properties', getAllProperties)
 
@@ -40,6 +43,8 @@ app.delete('/api/bookings/:id', deleteBooking)
 app.patch('/api/bookings/:id', patchBooking)
 
 app.all('/*invalid', handleInvalidPath)
+
+app.listen(3000)
 
 app.use(handleBadRequest)
 app.use(handleCustomErrors)
