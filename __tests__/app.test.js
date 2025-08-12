@@ -57,7 +57,7 @@ describe('app', () => {
                     const { body } = await request(app).get('/api/properties?sort=invalid').expect(200)
                     expect(body.properties[0].property_id).toBe(2)
                     expect(body.properties[body.properties.length - 1].property_id).toBeOneOf([4, 11])
-                    expect(body.msg).toBe('Invalid value "invalid" provided for sort. Default sort returned.')                    
+                    expect(body.msg).toBe('Invalid value "invalid" provided for sort. Default sort returned.')
                 })
             })
             describe('dir', () => {
@@ -80,7 +80,7 @@ describe('app', () => {
                     const { body } = await request(app).get('/api/properties?dir=invalid')
                     expect(body.properties[0].property_id).toBe(2)
                     expect(body.properties[body.properties.length - 1].property_id).toBeOneOf([4, 11])
-                    expect(body.msg).toBe('Invalid value "invalid" provided for dir. Default dir returned.')                    
+                    expect(body.msg).toBe('Invalid value "invalid" provided for dir. Default dir returned.')
                 })
             })
             describe('max_price', () => {
@@ -171,6 +171,10 @@ describe('app', () => {
                 const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180&sort=price_per_night&dir=asc').expect(200)
                 expect(houses.properties[0].property_name).toBe('Cosy Family House')
                 expect(houses.properties[1].property_name).toBe('Quaint Cottage in the Hills')
+            })
+            test('returns 200 with msg when all queries valid but no properties', async () => {
+                const { body } = await request(app).get('/api/properties?property_type=house&min_price=160&max_price=170&sort=price_per_night&dir=asc').expect(200)
+                expect(body.msg).toBe('Properties not found')
             })
         })
     })
