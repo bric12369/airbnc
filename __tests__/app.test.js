@@ -325,13 +325,21 @@ describe('app', () => {
             expect(body.review).toMatchObject(expected)
             expect(body.review.hasOwnProperty('created_at')).toBe(true)
         })
-        test('returns 404 and msg when passed an id which does not exist', async () => {
+        test('returns 404 and msg when passed a property id which does not exist', async () => {
             const { body } = await request(app).post('/api/properties/1000/reviews').send({
                 "guest_id": 2,
                 "rating": 5,
                 "comment": 'Great'
             }).expect(404)
             expect(body.msg).toBe('Property not found')
+        })
+        test('returns 404 and msg when guest_id does not exist', async () => {
+            const { body } = await request(app).post('/api/properties/3/reviews').send({
+                "guest_id": 1000,
+                "rating": 5,
+                "comment": 'Great'
+            }).expect(404)
+            expect(body.msg).toBe('User not found')
         })
         test('returns 400 and msg when passed invalid data type for id', async () => {
             const { body } = await request(app).post('/api/properties/not-a-number/reviews').send({
@@ -347,7 +355,7 @@ describe('app', () => {
                 "rating": 5,
                 "comment": 'Great'
             }).expect(400)
-            expect(body.msg).toBe('Bad request: Payload includes invalid data type')
+            expect(body.msg).toBe('Bad request: invalid data type')
         })
         test('returns 400 and msg when payload missing a not null variable', async () => {
             const { body } = await request(app).post('/api/properties/3/reviews').send({

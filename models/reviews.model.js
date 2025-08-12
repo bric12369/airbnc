@@ -25,13 +25,6 @@ const fetchPropertyReviews = async (id) => {
 
 const insertReview = async (guest_id, rating, comment, id) => {
 
-    if (
-        guest_id && typeof guest_id !== 'number' ||
-        rating && typeof rating !== 'number'
-    ) {
-        return Promise.reject({status: 400, msg: 'Bad request: Payload includes invalid data type'})
-    }
-
     const values = [id, guest_id, rating, comment]
 
     const query = `INSERT INTO reviews (property_id, guest_id, rating, comment)

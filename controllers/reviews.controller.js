@@ -1,5 +1,6 @@
 const { fetchSingleProperty } = require('../models/properties.model')
 const { fetchPropertyReviews, insertReview, fetchReviews, removeReview, fetchSingleReview } = require('../models/reviews.model')
+const { fetchUser } = require('../models/users.model')
 
 const getPropertyReviews = async (req, res, next) => {
     const { id } = req.params
@@ -18,6 +19,7 @@ const postReview = async (req, res, next) => {
     const { guest_id, rating, comment } = req.body
     const { id } = req.params
     try {
+        if (guest_id) await fetchUser(guest_id)
         await fetchSingleProperty(id)
         const review = await insertReview(guest_id, rating, comment, id)
         res.status(201).send({ review })
