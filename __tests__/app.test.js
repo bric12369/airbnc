@@ -49,14 +49,14 @@ describe('app', () => {
                     expect(body.properties[body.properties.length - 1].property_id).toBeOneOf([4, 11])
                 })
                 test('?sort=price_per_night orders properties from highest cost_per_night to lowest', async () => {
-                    const { body } = await request(app).get('/api/properties?sort=price_per_night')
+                    const { body } = await request(app).get('/api/properties?sort=price_per_night').expect(200)
                     expect(body.properties[0].property_id).toBe(6)
                     expect(body.properties[body.properties.length - 1].property_id).toBe(5)
                 })
             })
             describe('dir', () => {
                 test('?dir=asc inverts the default order of properties', async () => {
-                    const { body } = await request(app).get('/api/properties?dir=asc')
+                    const { body } = await request(app).get('/api/properties?dir=asc').expect(200)
                     expect(body.properties[0].property_id).toBeOneOf([4, 11])
                     expect(body.properties[body.properties.length - 1].property_id).toBe(2)
                 })
@@ -66,14 +66,14 @@ describe('app', () => {
                     expect(body.properties[body.properties.length - 1].property_id).toBeOneOf([4, 11])
                 })
                 test('?dir=asc chains onto ?sort=cost_per_night to order from lowest to highest cost_per_night', async () => {
-                    const { body } = await request(app).get('/api/properties?sort=price_per_night&dir=asc')
+                    const { body } = await request(app).get('/api/properties?sort=price_per_night&dir=asc').expect(200)
                     expect(body.properties[body.properties.length - 1].property_id).toBe(6)
                     expect(body.properties[0].property_id).toBe(5)
                 })
             })
             describe('max_price', () => {
                 test('?max_price limits returned properties by max price', async () => {
-                    const { body } = await request(app).get('/api/properties?max_price=100')
+                    const { body } = await request(app).get('/api/properties?max_price=100').expect(200)
                     body.properties.forEach((property) => {
                         expect(property.price_per_night <= 100).toBe(true)
                     })
@@ -89,7 +89,7 @@ describe('app', () => {
             })
             describe('min_price', () => {
                 test('?min_price limits returned properties by min price', async () => {
-                    const { body } = await request(app).get('/api/properties?min_price=100')
+                    const { body } = await request(app).get('/api/properties?min_price=100').expect(200)
                     body.properties.forEach((property) => {
                         expect(property.price_per_night >= 100).toBe(true)
                     })
@@ -101,7 +101,7 @@ describe('app', () => {
             })
             describe('property_type', () => {
                 test('?property_type returns only properties with matching property type', async () => {
-                    const { body } = await request(app).get('/api/properties?property_type=house')
+                    const { body } = await request(app).get('/api/properties?property_type=house').expect(200)
                     const resultIds = body.properties.map(({ property_id }) => property_id)
                     expect(resultIds.length).toBe(3)
                     expect(resultIds).toEqual(expect.arrayContaining([2, 7, 10]))
@@ -135,24 +135,24 @@ describe('app', () => {
         })
         describe('Queries: Combinations', () => {
             test('returns properties filtered by type, min and max prices', async () => {
-                const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180')
+                const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180').expect(200)
                 houses.properties.forEach((property) => {
                     expect(property.property_name).toBeOneOf(['Cosy Family House', 'Quaint Cottage in the Hills'])
                     expect(property.price_per_night >= 150 && property.price_per_night <= 180).toBe(true)
                 })
-                const { body: apartments } = await request(app).get('/api/properties?min_price=130&property_type=apartment&max_price=200')
+                const { body: apartments } = await request(app).get('/api/properties?min_price=130&property_type=apartment&max_price=200').expect(200)
                 expect(apartments.properties.length).toBe(1)
                 expect(apartments.properties[0].price_per_night >= 130 &&
                     apartments.properties[0].price_per_night <= 200
                 ).toBe(true)
             })
             test('returns properties filtered by type, min and max prices and orders by cost', async () => {
-                const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180&sort=price_per_night')
+                const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180&sort=price_per_night').expect(200)
                 expect(houses.properties[0].property_name).toBe('Quaint Cottage in the Hills')
                 expect(houses.properties[1].property_name).toBe('Cosy Family House')
             })
             test('returns properties filtered by type, min and max prices and orders by cost in ascending order', async () => {
-                const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180&sort=price_per_night&dir=asc')
+                const { body: houses } = await request(app).get('/api/properties?property_type=house&min_price=150&max_price=180&sort=price_per_night&dir=asc').expect(200)
                 expect(houses.properties[0].property_name).toBe('Cosy Family House')
                 expect(houses.properties[1].property_name).toBe('Quaint Cottage in the Hills')
             })
@@ -197,11 +197,11 @@ describe('app', () => {
         describe('Queries', () => {
             describe('user_id', () => {
                 test('?user_id adds another property, favourited, which is a boolean value representing whether the corresponding user has favourited that property', async () => {
-                    const { body } = await request(app).get('/api/properties/3?user_id=1')
+                    const { body } = await request(app).get('/api/properties/3?user_id=1').expect(200)
                     const property = body.property
                     expect(typeof property.favourited).toBe('boolean')
                     expect(property.favourited).toBe(false)
-                    const { body: body2 } = await request(app).get('/api/properties/3?user_id=6')
+                    const { body: body2 } = await request(app).get('/api/properties/3?user_id=6').expect(200)
                     const property2 = body2.property
                     expect(property2.favourited).toBe(true)
                 })
