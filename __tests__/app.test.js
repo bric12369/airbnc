@@ -82,7 +82,7 @@ describe('app', () => {
                     const { body } = await request(app).get('/api/properties?max_price=not_a_number').expect(400)
                     expect(body.msg).toBe('Bad request: invalid data type')
                 })
-                test.only('returns status 200 with msg properties not found when max_price is a valid number, but lower than the lowest cost_per_night', async () => {
+                test('returns status 200 with msg properties not found when max_price is a valid number, but lower than the lowest cost_per_night', async () => {
                     const { body } = await request(app).get('/api/properties?max_price=1').expect(200)
                     expect(body.msg).toBe('Properties not found')
                 })
@@ -97,6 +97,10 @@ describe('app', () => {
                 test('returns status 400 with msg Bad request when min_price is not a number', async () => {
                     const { body } = await request(app).get('/api/properties?min_price=not_a_number').expect(400)
                     expect(body.msg).toBe('Bad request: invalid data type')
+                })
+                test('returns status 200 with msg properties not found when min_price is a valid number, but more than the highest cost_per_night', async () => {
+                    const { body } = await request(app).get('/api/properties?min_price=1000').expect(200)   
+                    expect(body.msg).toBe('Properties not found')                 
                 })
             })
             describe('property_type', () => {
