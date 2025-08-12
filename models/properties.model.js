@@ -3,6 +3,10 @@ const db = require('../db/connection')
 const fetchAllProperties = async (sort, dir, max_price, min_price, property_type, host_id) => {
     let orderClause = 'COUNT (favourites.favourite_id)'
     if (sort === 'price_per_night') orderClause = 'price_per_night'
+    let msg
+    if (sort && sort !== 'price_per_night' && sort !== 'popularity') {
+        msg = `Invalid value "${sort}" provided for sort. Default sort returned.`
+    }
 
     let directionClause = 'DESC'
     if (dir?.toUpperCase() === 'ASC') directionClause = 'ASC'
@@ -57,7 +61,7 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
         }
     }
     
-    return rows
+    return {rows, msg}
 }
 
 const fetchSingleProperty = async (id, user_id) => {

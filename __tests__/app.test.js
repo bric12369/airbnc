@@ -53,6 +53,12 @@ describe('app', () => {
                     expect(body.properties[0].property_id).toBe(6)
                     expect(body.properties[body.properties.length - 1].property_id).toBe(5)
                 })
+                test('when invalid value provided for ?sort, default sort by favorited is returned along with a msg', async () => {
+                    const { body } = await request(app).get('/api/properties?sort=invalid').expect(200)
+                    expect(body.properties[0].property_id).toBe(2)
+                    expect(body.properties[body.properties.length - 1].property_id).toBeOneOf([4, 11])
+                    expect(body.msg).toBe('Invalid value "invalid" provided for sort. Default sort returned.')                    
+                })
             })
             describe('dir', () => {
                 test('?dir=asc inverts the default order of properties', async () => {
@@ -99,8 +105,8 @@ describe('app', () => {
                     expect(body.msg).toBe('Bad request: invalid data type')
                 })
                 test('returns status 200 with msg properties not found when min_price is a valid number, but more than the highest cost_per_night', async () => {
-                    const { body } = await request(app).get('/api/properties?min_price=1000').expect(200)   
-                    expect(body.msg).toBe('Properties not found')                 
+                    const { body } = await request(app).get('/api/properties?min_price=1000').expect(200)
+                    expect(body.msg).toBe('Properties not found')
                 })
             })
             describe('property_type', () => {
@@ -649,32 +655,32 @@ describe('app', () => {
             const { body } = await request(app).patch('/api/bookings/1000').send({
                 "check_in_date": '2025-12-02',
                 "check_out_date": '2025-12-31'
-            }).expect(404)  
-            expect(body.msg).toBe('Booking not found')          
+            }).expect(404)
+            expect(body.msg).toBe('Booking not found')
         })
         test('returns 400 when provided invalid date', async () => {
             const { body } = await request(app).patch('/api/bookings/1').send({
                 "check_in_date": '2025-55-66',
                 "check_out_date": '2025-12-31'
-            }).expect(400)       
-            expect(body.msg).toBe('Bad request: invalid date provided')       
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: invalid date provided')
         })
         test('returns 400 when check in or check out is in the past', async () => {
             const { body } = await request(app).patch('/api/bookings/1').send({
                 "check_in_date": '2023-11-11',
                 "check_out_date": '2025-12-31'
-            }).expect(400)   
-            expect(body.msg).toBe('Bad request: check in/check out cannot be in the past')        
+            }).expect(400)
+            expect(body.msg).toBe('Bad request: check in/check out cannot be in the past')
         })
         test('returns 400 if only one date to update is provided which attempts to place check out before check in', async () => {
             const { body } = await request(app).patch('/api/bookings/1').send({
                 "check_in_date": '2025-12-12',
             }).expect(400)
-            expect(body.msg).toBe('Bad request: check out must be after check in')    
+            expect(body.msg).toBe('Bad request: check out must be after check in')
         })
         test('returns 400 if nothing provided to update', async () => {
             const { body } = await request(app).patch('/api/bookings/1').send({}).expect(400)
-            expect(body.msg).toBe('Bad request: no fields provided to update')               
+            expect(body.msg).toBe('Bad request: no fields provided to update')
         })
     })
 })

@@ -5,8 +5,10 @@ const getAllProperties = async (req, res, next) => {
     const { sort, dir, max_price, min_price, property_type, host_id } = req.query
     try {
         if (host_id) await fetchUser(host_id)
-        const properties = await fetchAllProperties(sort, dir, max_price, min_price, property_type, host_id)
-        res.send({ properties })
+        const { rows, msg } = await fetchAllProperties(sort, dir, max_price, min_price, property_type, host_id)
+        const response = { properties: rows }
+        if (msg) response.msg = msg
+        res.send(response)
     } catch (error) {
         next(error)
     }
