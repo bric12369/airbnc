@@ -189,22 +189,24 @@ describe('app', () => {
         })
         test('get request to /api/properties/:id returns an array of single property with the following keys: property_id, property_name, location, price_per_night, description, host, host_avatar and favourite_count', async () => {
             const { body } = await request(app).get('/api/properties/3')
-            const property = body.property
-            expect(property.hasOwnProperty('property_id')).toBe(true)
-            expect(property.hasOwnProperty('property_name')).toBe(true)
-            expect(property.hasOwnProperty('location')).toBe(true)
-            expect(property.hasOwnProperty('price_per_night')).toBe(true)
-            expect(property.hasOwnProperty('description')).toBe(true)
-            expect(property.hasOwnProperty('host')).toBe(true)
-            expect(property.hasOwnProperty('host_avatar')).toBe(true)
-            expect(property.hasOwnProperty('favourite_count')).toBe(true)
+            const expected = {
+                property_id: 3,
+                property_name: 'Chic Studio Near the Beach',
+                location: 'Brighton, UK',
+                price_per_night: '90',
+                description: 'Description of Chic Studio Near the Beach.',
+                host: 'Alice Johnson',
+                host_avatar: 'https://example.com/images/alice.jpg',
+                favourite_count: '1',
+                images: ['https://example.com/images/chic_studio_1.jpg']
+            }
+            expect(body.property).toEqual(expected)
         })
         test('property has an image property equal to an array of all associated images', async () => {
-            const { body } = await request(app).get('/api/properties/1')
-            expect(body.property.images.length).toBe(3)
-            expect(Array.isArray(body.property.images)).toBe(true)
-            const { body: body2 } = await request(app).get('/api/properties/2')
-            expect(body2.property.images.length).toBe(1)
+            const { body } = await request(app).get('/api/properties/3')
+            expect(body.property.images.length).toBe(1)
+            const expected = ['https://example.com/images/chic_studio_1.jpg']
+            expect(body.property.images).toEqual(expected)
         })
         test('returns 404 and msg when passed an id which does not exist', async () => {
             const { body } = await request(app).get('/api/properties/1000').expect(404)
