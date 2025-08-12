@@ -44,8 +44,6 @@ app.patch('/api/bookings/:id', patchBooking)
 
 app.all('/*invalid', handleInvalidPath)
 
-app.listen(3000)
-
 app.use(handleBadRequest)
 app.use(handleCustomErrors)
 

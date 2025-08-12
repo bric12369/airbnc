@@ -9,7 +9,7 @@
     "test-raw-data": "jest format-raw-data.test.js",
     "setup-db": "psql -f ./db/setup.sql",
     "seed": "node db/seed-run.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
