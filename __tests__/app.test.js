@@ -76,6 +76,12 @@ describe('app', () => {
                     expect(body.properties[body.properties.length - 1].property_id).toBe(6)
                     expect(body.properties[0].property_id).toBe(5)
                 })
+                test('when invalid value provided for ?dir, default dir by desc is returned along with a msg', async () => {
+                    const { body } = await request(app).get('/api/properties?dir=invalid')
+                    expect(body.properties[0].property_id).toBe(2)
+                    expect(body.properties[body.properties.length - 1].property_id).toBeOneOf([4, 11])
+                    expect(body.msg).toBe('Invalid value "invalid" provided for dir. Default dir returned.')                    
+                })
             })
             describe('max_price', () => {
                 test('?max_price limits returned properties by max price', async () => {

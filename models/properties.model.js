@@ -1,18 +1,23 @@
 const db = require('../db/connection')
 
 const fetchAllProperties = async (sort, dir, max_price, min_price, property_type, host_id) => {
-    let orderClause = 'COUNT (favourites.favourite_id)'
-    if (sort === 'price_per_night') orderClause = 'price_per_night'
+    const validSort = ['price_per_night', 'popularity']
+    const validDir = ['ASC', 'DESC']
     let msg
-    if (sort && sort !== 'price_per_night' && sort !== 'popularity') {
+    
+    if (sort && !validSort.includes(sort)) {
         msg = `Invalid value "${sort}" provided for sort. Default sort returned.`
+    } else if (dir && !validDir.includes(dir.toUpperCase())) {
+        msg = `Invalid value "${dir}" provided for dir. Default dir returned.`
     }
+    
+    const orderClause = sort === 'price_per_night' ? 'price_per_night' : 'COUNT (favourites.favourite_id)'
 
-    let directionClause = 'DESC'
-    if (dir?.toUpperCase() === 'ASC') directionClause = 'ASC'
+    const directionClause = dir?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'
 
     let whereClause = ''
     const whereConditions = []
+
     const values = []
     if (max_price) {
         values.push(max_price)
@@ -53,6 +58,7 @@ const fetchAllProperties = async (sort, dir, max_price, min_price, property_type
         GROUP BY properties.property_id, name, location, price_per_night, users.first_name, users.surname, img.image_url
         ORDER BY ${orderClause} ${directionClause};`, values
     )
+    
     if (!rows.length) {
         if (host_id) {
             return Promise.reject({status: 200, msg: 'This user currently has no properties'})
