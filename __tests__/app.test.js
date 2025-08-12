@@ -221,7 +221,6 @@ describe('app', () => {
                 test('?user_id adds another property, favourited, which is a boolean value representing whether the corresponding user has favourited that property', async () => {
                     const { body } = await request(app).get('/api/properties/3?user_id=1').expect(200)
                     const property = body.property
-                    expect(typeof property.favourited).toBe('boolean')
                     expect(property.favourited).toBe(false)
                     const { body: body2 } = await request(app).get('/api/properties/3?user_id=6').expect(200)
                     const property2 = body2.property
@@ -279,14 +278,16 @@ describe('app', () => {
         })
         test('get request to /api/users/:id returns single user with the following properties: user_id, first_name, surname, email, phone_number, avatar, created_at', async () => {
             const { body } = await request(app).get('/api/users/3')
-            const { user } = body
-            expect(user.hasOwnProperty('user_id')).toBe(true)
-            expect(user.hasOwnProperty('first_name')).toBe(true)
-            expect(user.hasOwnProperty('surname')).toBe(true)
-            expect(user.hasOwnProperty('email')).toBe(true)
-            expect(user.hasOwnProperty('phone_number')).toBe(true)
-            expect(user.hasOwnProperty('avatar')).toBe(true)
-            expect(user.hasOwnProperty('created_at')).toBe(true)
+            const expected = {
+                user_id: 3,
+                first_name: 'Emma',
+                surname: 'Davis',
+                email: 'emma@example.com',
+                phone_number: '+44 7000 333333',
+                avatar: 'https://example.com/images/emma.jpg'
+            }
+            expect(body.user).toMatchObject(expected)
+            expect(body.user.hasOwnProperty('created_at')).toBe(true)
         })
         test('returns 404 and msg when passed a user_id which does not exist', async () => {
             const { body } = await request(app).get('/api/users/1000').expect(404)
@@ -314,13 +315,15 @@ describe('app', () => {
                 "rating": 5,
                 "comment": 'Great'
             })
-            const { review } = body
-            expect(review.review_id).toBe(17)
-            expect(review.property_id).toBe(3)
-            expect(review.guest_id).toBe(2)
-            expect(review.rating).toBe(5)
-            expect(review.comment).toBe('Great')
-            expect(review.hasOwnProperty('created_at')).toBe(true)
+            const expected = {
+                review_id: 17,
+                property_id: 3,
+                guest_id: 2,
+                rating: 5,
+                comment: 'Great'
+            }
+            expect(body.review).toMatchObject(expected)
+            expect(body.review.hasOwnProperty('created_at')).toBe(true)
         })
         test('returns 404 and msg when passed an id which does not exist', async () => {
             const { body } = await request(app).post('/api/properties/1000/reviews').send({
@@ -372,11 +375,14 @@ describe('app', () => {
     describe('GET /api/reviews/:id', () => {
         test('get request to /api/reviews/:id returns status code 200 and a single review with the following properties: review_id, property_name, guest, rating, comment, created_at', async () => {
             const { body } = await request(app).get('/api/reviews/3').expect(200)
-            expect(body.review.hasOwnProperty('review_id')).toBe(true)
-            expect(body.review.hasOwnProperty('property_name')).toBe(true)
-            expect(body.review.hasOwnProperty('guest')).toBe(true)
-            expect(body.review.hasOwnProperty('rating')).toBe(true)
-            expect(body.review.hasOwnProperty('comment')).toBe(true)
+            const expected = {
+                review_id: 3,
+                property_name: 'Luxury Penthouse with View',
+                guest: 'Rachel Cummings',
+                rating: 5,
+                comment: 'Comment about Luxury Penthouse with View'
+            }
+            expect(body.review).toMatchObject(expected)
             expect(body.review.hasOwnProperty('created_at')).toBe(true)
         })
         test('returns 404 and msg when passed a review_id which does not exist', async () => {
