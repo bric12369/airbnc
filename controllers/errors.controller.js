@@ -16,7 +16,11 @@ const handleBadRequest = (err, req, res, next) => {
 }
 
 const handleCustomErrors = async (err, req, res, next) => {
-    res.status(err.status).send({ msg: err.msg })
+    if (err.status && err.msg) {
+        res.status(err.status).send({ msg: err.msg })
+    } else {
+        next()
+    }
 }
 
 module.exports = { handleInvalidPath, handleBadRequest, handleCustomErrors }
