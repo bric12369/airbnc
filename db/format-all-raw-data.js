@@ -2,7 +2,12 @@ const {replacePeopleNamesWithIds, sortKeys, replacePropertyNamesWithIds, extract
 
 const formatJson = require('./utils/format-json')
 
-const { propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData } = require('./data/test') 
+let data = require('./data/test') 
+if (!process.env.NODE_ENV) {
+    data = require('./data/dev') 
+}
+
+const { propertyTypesData, usersData, propertiesData, reviewsData, imagesData, favouritesData, bookingsData } = data
 
 
 const formattedPropertyTypesData = formatJson(propertyTypesData)
