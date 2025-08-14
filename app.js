@@ -20,25 +20,25 @@ app.get('/api/properties/:id/reviews', getPropertyReviews)
 
 app.get('/api/users/:id', getUserDetails)
 
-app.post('/api/properties/:id/reviews', postReview)
-
 app.get('/api/reviews', getReviews)
 
 app.get('/api/reviews/:id', getSingleReview)
 
-app.delete('/api/reviews/:id', deleteReview)
+app.get('/api/properties/:id/bookings', getBookings)
+
+app.post('/api/properties/:id/reviews', postReview)
 
 app.post('/api/properties/:id/favourite', postFavourite)
 
-app.delete('/api/properties/:property_id/users/:user_id/favourite', deleteFavourite)
-
-app.patch('/api/users/:id', patchUserDetails)
-
-app.get('/api/properties/:id/bookings', getBookings)
-
 app.post('/api/properties/:id/bookings', postBooking)
 
+app.delete('/api/properties/:property_id/users/:user_id/favourite', deleteFavourite)
+
+app.delete('/api/reviews/:id', deleteReview)
+
 app.delete('/api/bookings/:id', deleteBooking)
+
+app.patch('/api/users/:id', patchUserDetails)
 
 app.patch('/api/bookings/:id', patchBooking)
 
