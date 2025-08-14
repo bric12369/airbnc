@@ -1,11 +1,368 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AirBnC</title>
 </head>
+
 <body>
+
     <h1>AirBnC</h1>
+
+    <section id="endpoints-section">
+
+        <h2>Get Requests:</h2>
+
+        <div id="get-requests">
+
+            <div class="endpoint">
+                <h3>Get Properties</h3>
+                <p>GET /api/properties</p>
+                <p>Responds with an array of property objects:</p>
+                <pre><code>
+    {
+    "properties": [
+        {
+        "property_id": 10,
+        "property_name": "Quaint Cottage in the Hills",
+        "location": "Lake District, UK",
+        "price_per_night": "180",
+        "host": "Isabella Martinez",
+        "image": "https://images.unsplash.com/photo-1720877851762-1fd589e96311?q=80&w=3200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        },
+        {
+        "property_id": 20,
+        "property_name": "Lakeside Luxury Villa",
+        "location": "Lake District, UK",
+        "price_per_night": "350",
+        "host": "Lucas Walker",
+        "image": "https://images.unsplash.com/photo-1613545325268-9265e1609167?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        }
+        // ...more properties
+        ]
+    }
+                    </code></pre>
+                <p>Also takes the following optional queries to sort, order or filter the results:</p>
+                <ul>
+                    <li>sort - sorts by price_per_night or popularity (default)</li>
+                    <li>dir - orders by asc or desc (default)</li>
+                    <li>max_price - filters by a given max price</li>
+                    <li>min_price - filters by a given min price</li>
+                    <li>property_type - filters by a given property type e.g. House</li>
+                    <li>host_id - filters by a given host ID</li>
+                </ul>
+            </div>
+
+            <div class="endpoint">
+                <h3>Get Property by ID</h3>
+                <p>GET /api/properties/:id</p>
+                <p>Responds with a single property object with matching property_id:</p>
+                <pre><code>
+    {
+    "property": {
+        "property_id": 5,
+        "property_name": "Charming Studio Retreat",
+        "location": "Bristol, UK",
+        "price_per_night": "85",
+        "description": "A peaceful studio perfect for solo travelers or couples.",
+        "host": "Emma Davis",
+        "host_avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "favourite_count": "0",
+        "images": [
+        "https://images.unsplash.com/photo-1471086569966-db3eebc25a59?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "https://images.unsplash.com/photo-1542853647-47ad77242390?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        ]
+    }
+    }
+                    </code></pre>
+                <p>Also takes an optional user_id query which asserts whether or not a given user has favourited this
+                    property:</p>
+            </div>
+
+            <div class="endpoint">
+                <h3>Get Reviews</h3>
+                <p>GET /api/reviews</p>
+                <p>Responds with an array of all reviews:</p>
+                <pre><code>
+    {
+    "reviews": [
+        {
+        "review_id": 1,
+        "property_name": "Modern Apartment in City Center",
+        "guest": "Bob Smith",
+        "rating": 5,
+        "comment": "Great place to stay! The apartment was clean, modern, and very comfortable. Its location in the heart of the city made it extremely convenient to explore nearby attractions, restaurants, and shops. Would definitely stay here again.",
+        "created_at": "2024-03-15T10:24:00.000Z"
+        },
+        {
+        "review_id": 2,
+        "property_name": "Cosy Family House",
+        "guest": "Frank White",
+        "rating": 4,
+        "comment": "Lovely house that was just perfect for our family getaway. It had all the amenities we needed and the surrounding neighborhood was quiet and safe. We enjoyed spending evenings in the garden and cooking meals together in the spacious kitchen.",
+        "created_at": "2024-05-20T14:42:00.000Z"
+        },
+        // ...more reviews
+        ]
+    }
+                    </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Get Property Reviews</h3>
+                <p>GET /api/properties/:id/reviews</p>
+                <p>Responds with an array of review objects and an average rating for a given property_id:</p>
+                <pre><code>
+    {
+    "reviews": [
+        {
+        "review_id": 1,
+        "comment": "Great place to stay! The apartment was clean, modern, and very comfortable. Its location in the heart of the city made it extremely convenient to explore nearby attractions, restaurants, and shops. Would definitely stay here again.",
+        "rating": 5,
+        "created_at": "2024-03-15T10:24:00.000Z",
+        "guest": "Bob Smith",
+        "guest_avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        }
+    ],
+    "average_rating": 5
+    }
+                    </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Get Review by ID</h3>
+                <p>GET /api/reviews/:id</p>
+                <p>Responds with a single review object with matching review_id:</p>
+                <pre><code>
+    {
+    "review": {
+        "review_id": 1,
+        "property_name": "Modern Apartment in City Center",
+        "guest": "Bob Smith",
+        "rating": 5,
+        "comment": "Great place to stay! The apartment was clean, modern, and very comfortable. Its location in the heart of the city made it extremely convenient to explore nearby attractions, restaurants, and shops. Would definitely stay here again.",
+        "created_at": "2024-03-15T10:24:00.000Z"
+    }
+    }
+                    </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Get User by ID</h3>
+                <p>GET /api/users/:id</p>
+                <p>Responds with a single user object with matching user_id:</p>
+                <pre><code>
+    {
+    "user": {
+        "user_id": 1,
+        "first_name": "Alice",
+        "surname": "Johnson",
+        "email": "alice@example.com",
+        "phone_number": "+44 7000 111111",
+        "avatar": "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "created_at": "2025-08-13T12:59:37.509Z"
+    }
+    }
+                    </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Get Property Bookings</h3>
+                <p>GET /api/properties/:id/bookings</p>
+                <p>Responds with an array of booking objects and the property_id with which they're associated:</p>
+                <pre><code>
+    {
+    "bookings": [
+        {
+        "booking_id": 1,
+        "check_in_date": "2025-02-15T00:00:00.000Z",
+        "check_out_date": "2025-02-20T00:00:00.000Z",
+        "created_at": "2025-08-13T12:59:37.517Z"
+        },
+        {
+        "booking_id": 22,
+        "check_in_date": "2025-11-15T00:00:00.000Z",
+        "check_out_date": "2025-11-20T00:00:00.000Z",
+        "created_at": "2025-08-13T12:59:37.517Z"
+        }
+    ],
+    "property_id": 1
+    }
+                    </code></pre>
+            </div>
+
+        </div>
+
+        <h2>Post Requests:</h2>
+
+        <div id="post-requests">
+
+            <div class="endpoint">
+                <h3>Post Review</h3>
+                <p>POST /api/properties/:id/reviews</p>
+                <p>Posts a new review associated with the given property. Requires a <strong>JSON payload</strong> with
+                    guest_id, rating and optional comment:</p>
+                <pre><code>
+    {
+        "guest_id": 2,
+        "rating": 5,
+        "comment": "Great"
+    }
+                    </code></pre>
+                <p>Returns the created review:</p>
+                <pre><code>
+    {
+        "review": {
+            "review_id": 11,
+            "property_id": 3,
+            "guest_id": 2,
+            "rating": 5,
+            "comment": "Great",
+            "created_at": "2025-08-14T14:43:31.906Z"
+        }
+    }
+                    </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Post Favourite</h3>
+                <p>POST /api/properties/:id/favourite</p>
+                <p>Favourites a given property when passed a <strong>JSON payload</strong> with a guest_id:</p>
+                <pre><code>
+    {
+        "guest_id": 2
+    }                    
+                    </code></pre>
+                <p>Returns an object with a confirmation message and the newly assigned favourite_id:</p>
+                <pre><code>
+    {
+        "msg": "Property favourited successfully",
+        "favourite_id": 38
+    }
+                    </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Post Booking</h3>
+                <p>POST /api/properties/:id/bookings</p>
+                <p>Creates a new booking when passed a <strong>JSON payload</strong> with a guest_id, check_in_date and
+                    check_out_date:</p>
+                <pre><code>
+    {
+        "guest_id": 1,
+        "check_in_date": "2025-11-11",
+        "check_out_date": "2025-12-12"
+    }
+                    </code></pre>
+                <p>Returns an object with a confirmation message and the newly assigned booking_id:</p>
+                <pre><code>
+    {
+        "msg": "Booking successful",
+        "booking_id": 27
+    }
+                    </code></pre>
+            </div>
+
+        </div>
+
+        <h2>Patch Requests:</h2>
+
+        <div id="patch-requests">
+
+            <div class="endpoint">
+                <h3>Update User Details</h3>
+                <p>PATCH /api/users/:id</p>
+                <p>Updates the given user's details when given a <strong>JSON payload</strong> with one or more of the
+                    following properties: first_name, surname, email, phone, avatar. For example:</p>
+                <pre><code>
+    {
+        "first_name": "Barry",
+        "email": "barry@example.com"
+    }
+                    </code></pre>
+                <p>This payload will upload just the first_name and email properties of the given user. The uploaded
+                    user object is returned:</p>
+                <pre><code>
+    {
+        "user": {
+            "user_id": 1,
+            "first_name": "Barry",
+            "surname": "Johnson",
+            "email": "barry@example.com",
+            "phone_number": "+44 7000 111111",
+            "is_host": true,
+            "avatar": "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "created_at": "2025-08-14T15:06:00.500Z"
+        }
+    }                   
+                    </code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>Update Booking Details</h3>
+                <p>PATCH /api/bookings/:id</p>
+                <p>Updates the given booking's details when passed a <strong>JSON payload</strong> with one or both of
+                    the following properties: check_in_date, check_out_date. For example:</p>
+                <pre><code>
+    {
+        "check_in_date": "2025-12-02",
+        "check_out_date": "2025-12-31"
+    }
+                    </code></pre>
+                <p>Returns the updated booking object:</p>
+                <pre><code>
+    {
+        "booking": {
+            "booking_id": 1,
+            "property_id": 1,
+            "guest_id": 2,
+            "check_in_date": "2025-12-02T00:00:00.000Z",
+            "check_out_date": "2025-12-31T00:00:00.000Z",
+            "created_at": "2025-08-14T15:06:00.517Z"
+        }
+    }                    
+                    </code></pre>
+            </div>
+
+        </div>
+
+        <h2>Delete Requests:</h2>
+
+        <div id="delete-requests">
+
+            <div class="endpoint">
+                <h3>Delete Favourite</h3>
+                <p>DELETE /api/properties/:property_id/users/:user_id/favourite</p>
+                <p>Deletes a favourited property when given a property_id and user_id. Doesn't return a body, only the
+                    status code: 204 No Content.</p>
+            </div>
+
+            <div class="endpoint">
+                <h3>Delete Review by ID</h3>
+                <p>DELETE /api/reviews/:id</p>
+                <p>Deletes the review with matching review_id. Returns status code: 204 No Content.</p>
+            </div>
+
+            <div class="endpoint">
+                <h3>Delete Booking by ID</h3>
+                <p>DELETE /api/bookings/:id</p>
+                <p>Deletes the booking with matching booking_id. Returns status code: 204 No Content.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <footer>
+        <p>By Barry Richards</p>
+    </footer>
+
 </body>
+
 </html>

@@ -1,0 +1,45 @@
+html {
+    font-size: 16px;
+    background-color: #EBEBEB;
+    font-family: Lato, sans-serif;
+}
+
+h1 {
+    font-size: 4rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+pre {
+    width: 35rem;
+    height: 20rem;
+    border: 2px black solid;
+    overflow: scroll;
+}
+
+.endpoint {
+    width: 35rem;
+    height: auto;
+    padding: 0 2rem;
+}
+
+.endpoint h3, .endpoint p {
+    text-align: center;
+}
+
+#get-requests, #post-requests, #patch-requests, #delete-requests {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 2rem 2rem 2rem;
+    justify-content: center;
+}
+
+footer p {
+    padding: 0 0 1rem 1rem;
+}

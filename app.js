@@ -10,6 +10,8 @@ const { serveIndex } = require('./controllers/index.controller')
 const app = express()
 app.use(express.json())
 
+app.use(express.static(__dirname));
+
 app.get('/', serveIndex)
 
 app.get('/api/properties', getAllProperties)
