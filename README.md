@@ -58,3 +58,9 @@ npm run dev
 ```
 
 Then go to `localhost:9090` in your browser or API client (e.g. Postman) to explore different endpoints.
+
+## 💻 Live API
+
+The backend API is live and accessible here: [https://airbnc-icdq.onrender.com/](https://airbnc-icdq.onrender.com/)
+
+You can use this URL to test the API without running it locally.
