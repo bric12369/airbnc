@@ -1,11 +1,24 @@
 html {
     font-size: 16px;
-    background-color: #EBEBEB;
+    color:#f4f4f4;
+    background-color: #44684a;
     font-family: Lato, sans-serif;
+}
+
+body {
+    margin: 0;
 }
 
 h1 {
     font-size: 4rem;
+    margin: 0;
+    padding: 1rem;
+    font-weight: bolder;
+}
+
+h1, footer p {
+    color: #44684a;
+    font-weight: 900;
 }
 
 h2 {
@@ -16,17 +29,31 @@ h1, h2 {
     text-align: center;
 }
 
+h3 {
+    font-size: 1.3rem;
+}
+
+header, footer {
+    background-color: #F1EDE2;
+}
+
 pre {
     width: 35rem;
     height: 20rem;
     border: 2px black solid;
     overflow: scroll;
+    scrollbar-color: #F1EDE2 #44684a;
 }
 
 .endpoint {
     width: 35rem;
     height: auto;
     padding: 0 2rem;
+}
+
+.endpoint p {
+    margin-bottom: 1.8rem;
+    height: 1.5rem;
 }
 
 .endpoint h3, .endpoint p {
@@ -41,5 +68,6 @@ pre {
 }
 
 footer p {
-    padding: 0 0 1rem 1rem;
+    padding: 1rem 0 1rem 1rem;
+    margin: 0;
 }
