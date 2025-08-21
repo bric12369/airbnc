@@ -1,40 +1,60 @@
 # AirBNC
 
-...about the project
+AirBNC is a backend API inspired by Airbnb, built with Node.js, Express, and PostgreSQL. It follows RESTful design principles, uses Supabase for database hosting, and is deployed on Render. I'm currently developing the frontend using React.
 
-## Getting Started
+## 🛠️ Tech Stack
 
-1: Ensure you've installed all dependencies using
+**Server:** Node.js | Express
+**Database:** PostgreSQL | Supabase
+**Deployment:** Render (Backend)
+
+## 💪 Getting Started
+
+### 1: Install Dependencies
+
+Ensure you've installed all dependencies using:
 ```
 npm install
 ```
 
-2: Next, you will need to create your test and dev databases, `airbnc_test` and `airbnc` locally. A script has been created to achieve this. Run:
+### 2: Create Local Databases
+
+Next, you will need to create two databases locally, `airbnc_test` and `airbnc`. A script has been created to achieve this. Run:
 
 ```
 npm run setup-db
 ```
 
-3: You'll need to store the credentials of the databases inside .env files at the root level of this project (remember to add .env files to your .gitignore). Inside .env.test, store: 
+### 3: Set up environment variables:
+
+You'll need to store the credentials of the databases inside .env files at the root level of this project (remember to add `.env*` to your .gitignore). 
+
+Inside `.env.test`, store: 
 
 ```
 PGDATABASE=airbnc_test
 ```
 
-4: Inside .env.development, store: 
+Inside `.env.development`, store: 
 
 ```
 PGDATABASE=airbnc
 ```
 
-5: Next, you need to seed the database. The test database is seeded automatically each time the test suite is run. To seed the devlopment database, run: 
+### 4: Seed the Databases
+
+The test database is seeded automatically each time the test suite is run. To seed the development database, run: 
 
 ```
 npm run seed
 ```
 
-6: Now you can run the development database locally to see all the ways you can interact with it, along with some example interactions. Run the below then navigate to `localhost:9090` in your browser:
+### 5: Run the Development Server
+
+To start the development server locally, run:
 
 ```
 npm run dev
 ```
+
+Then go to `localhost:9090` in your browser or API client (e.g. Postman) to explore different endpoints.
