@@ -15,7 +15,7 @@ npm install
 npm run setup-db
 ```
 
-3: You'll need to store the credentials of the databases inside .env files at the root level of this project. Inside .env.test, store: 
+3: You'll need to store the credentials of the databases inside .env files at the root level of this project (remember to add .env files to your .gitignore). Inside .env.test, store: 
 
 ```
 PGDATABASE=airbnc_test
