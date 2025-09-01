@@ -56,16 +56,18 @@ const patchBooking = async (req, res, next) => {
     }
 }
 
-const getBookingsByUserId = async (req, res) => {
+const getBookingsByUserId = async (req, res, next) => {
     const { id } = req.params
     try {
+        await fetchUser(id)
         const bookings = await fetchBookingsByUserId(id)
         bookings.forEach((booking) => {
             booking.check_in_date = booking.check_in_date.toISOString().split('T')[0]
             booking.check_out_date = booking.check_out_date.toISOString().split('T')[0]
         })
-        res.send({bookings})
+        res.send(bookings.length > 0 ? {bookings} : {msg: 'No bookings found'})
     } catch (error) {
+        console.log(error)
         next(error)
     }
 }

@@ -722,5 +722,18 @@ describe('app', () => {
             expect(body.bookings[0].host).toBe('Alice Johnson')
             expect(body.bookings[0].image).toBe('https://example.com/images/modern_apartment_1.jpg')
         })
+        test('returns 200 and msg if user has no bookings', async () => {
+            const { body } = await request(app).get('/api/users/1/bookings').expect(200)
+            expect(body.msg).toBe('No bookings found')
+        })
+        test('returns 404 and msg if provided user id does not exist', async () => {
+            const { body } = await request(app).get('/api/users/1000/bookings').expect(404)
+            console.log(body, '<<<<<<<<<<<<<<<<<<<')
+            expect(body.msg).toBe('User not found')
+        })  
+        test('returns 400 and msg if user id is incorrect data type', async () => {
+            const { body } = await request(app).get('/api/users/not-a-number/bookings').expect(400)
+            expect(body.msg).toBe('Bad request: invalid data type')
+        })
     })
 })

@@ -15,7 +15,7 @@ const handleBadRequest = (err, req, res, next) => {
     }
 }
 
-const handleCustomErrors = async (err, req, res, next) => {
+const handleCustomErrors = (err, req, res, next) => {
     if (err.status && err.msg) {
         res.status(err.status).send({ msg: err.msg })
     } else {
