@@ -728,7 +728,6 @@ describe('app', () => {
         })
         test('returns 404 and msg if provided user id does not exist', async () => {
             const { body } = await request(app).get('/api/users/1000/bookings').expect(404)
-            console.log(body, '<<<<<<<<<<<<<<<<<<<')
             expect(body.msg).toBe('User not found')
         })  
         test('returns 400 and msg if user id is incorrect data type', async () => {

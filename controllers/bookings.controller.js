@@ -67,7 +67,6 @@ const getBookingsByUserId = async (req, res, next) => {
         })
         res.send(bookings.length > 0 ? {bookings} : {msg: 'No bookings found'})
     } catch (error) {
-        console.log(error)
         next(error)
     }
 }
