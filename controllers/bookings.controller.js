@@ -1,4 +1,4 @@
-const { fetchBookings, insertBooking, removeBooking, updateBooking, checkBookingById } = require("../models/bookings.model")
+const { fetchBookings, insertBooking, removeBooking, updateBooking, checkBookingById, fetchBookingsByUserId } = require("../models/bookings.model")
 const { fetchSingleProperty } = require("../models/properties.model")
 const { fetchUser } = require("../models/users.model")
 
@@ -56,4 +56,18 @@ const patchBooking = async (req, res, next) => {
     }
 }
 
-module.exports = { getBookings, postBooking, deleteBooking, patchBooking }
+const getBookingsByUserId = async (req, res) => {
+    const { id } = req.params
+    try {
+        const bookings = await fetchBookingsByUserId(id)
+        bookings.forEach((booking) => {
+            booking.check_in_date = booking.check_in_date.toISOString().split('T')[0]
+            booking.check_out_date = booking.check_out_date.toISOString().split('T')[0]
+        })
+        res.send({bookings})
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { getBookings, postBooking, deleteBooking, patchBooking, getBookingsByUserId }

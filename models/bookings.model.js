@@ -18,6 +18,33 @@ const fetchBookings = async (property_id) => {
     return rows
 }
 
+const fetchBookingsByUserId = async (user_id) => {
+
+    const { rows } = await db.query(`
+        SELECT booking_id,
+        check_in_date,
+        check_out_date,
+        properties.property_id,
+        name AS property_name,
+        CONCAT(first_name, ' ', surname) AS host,
+        images.image_url AS image
+        FROM bookings
+        JOIN properties ON properties.property_id = bookings.property_id
+        JOIN users ON users.user_id = properties.host_id
+        JOIN LATERAL(
+            SELECT image_url
+            FROM
+            images
+            WHERE images.property_id = bookings.property_id
+            LIMIT 1
+        ) images ON true
+        WHERE guest_id = $1
+        ORDER BY check_in_date;
+        `, [user_id])
+
+    return rows
+}
+
 const insertBooking = async (property_id, guest_id, check_in_date, check_out_date) => {
 
     await checkValidDates(check_in_date, check_out_date)
@@ -96,4 +123,4 @@ const checkValidDates = (check_in_date, check_out_date) => {
     }
 }
 
-module.exports = { fetchBookings, insertBooking, removeBooking, updateBooking, checkBookingById }
+module.exports = { fetchBookings, fetchBookingsByUserId, insertBooking, removeBooking, updateBooking, checkBookingById }

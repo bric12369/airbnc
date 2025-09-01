@@ -4,7 +4,7 @@ const {handleInvalidPath, handleBadRequest, handleCustomErrors} = require('./con
 const {getUserDetails, patchUserDetails} = require('./controllers/users.controller')
 const {getPropertyReviews, postReview, deleteReview, getReviews, getSingleReview} = require('./controllers/reviews.controller')
 const { postFavourite, deleteFavourite } = require('./controllers/favourites.controller')
-const { getBookings, postBooking, deleteBooking, patchBooking } = require('./controllers/bookings.controller')
+const { getBookings, postBooking, deleteBooking, patchBooking, getBookingsByUserId } = require('./controllers/bookings.controller')
 const { serveIndex } = require('./controllers/index.controller')
 
 const app = express()
@@ -27,6 +27,8 @@ app.get('/api/reviews', getReviews)
 app.get('/api/reviews/:id', getSingleReview)
 
 app.get('/api/properties/:id/bookings', getBookings)
+
+app.get('/api/users/:id/bookings', getBookingsByUserId)
 
 app.post('/api/properties/:id/reviews', postReview)
 
