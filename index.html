@@ -230,6 +230,31 @@
 
             </div>
 
+            <div class="endpoint">
+                <h3>Get User Favourites</h3>
+                <p>GET /api/users/:id/favourites</p>
+                <p>Responds with an array of favourite objects:</p>
+                <pre><code>
+    {
+    "favourites": [
+        {
+        "favourite_id": 1,
+        "name": "Cosy Country Cottage",
+        "images": [
+            "https://images.unsplash.com/photo-1471086569966-db3eebc25a59?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "https://images.unsplash.com/photo-1542853647-47ad77242390?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        ],
+        "price_per_night": "130",
+        "location": "Cornwall, UK",
+        "property_type": "Cottage",
+        "description": "A charming cottage tucked away in the countryside, perfect for a weekend escape."
+        },
+        // ...more favourites
+        ]
+    }          
+                </code></pre>
+            </div>
+
         </div>
 
         <h2>Post Requests:</h2>
