@@ -735,4 +735,18 @@ describe('app', () => {
             expect(body.msg).toBe('Bad request: invalid data type')
         })
     })
+
+    describe('GET /api/users/:id/favourites', () => {
+        test('Returns 200 and an array of the given user\'s favouritted properties, each with the following properties: favourite_id, property_name, images, price_per_night, location, property_type and description', async () => {
+            const { body } = await request(app).get('/api/users/2/favourites').expect(200)
+            expect(body.favourites.length > 0)
+            expect(body.favourites[0].favourite_id).toBe(3)
+            expect(body.favourites[0].name).toBe('Seaside Studio Getaway')
+            expect(body.favourites[0].images).toEqual([ 'https://example.com/images/seaside_studio_1.jpg' ])
+            expect(body.favourites[0].price_per_night).toBe('95')
+            expect(body.favourites[0].location).toBe('Cornwall, UK')
+            expect(body.favourites[0].property_type).toBe('Studio')
+            expect(body.favourites[0].description).toBe('Description of Seaside Studio Getaway.')
+        })
+    })
 })

@@ -3,7 +3,7 @@ const {getAllProperties, getSingleProperty} = require('./controllers/properties.
 const {handleInvalidPath, handleBadRequest, handleCustomErrors} = require('./controllers/errors.controller')
 const {getUserDetails, patchUserDetails} = require('./controllers/users.controller')
 const {getPropertyReviews, postReview, deleteReview, getReviews, getSingleReview} = require('./controllers/reviews.controller')
-const { postFavourite, deleteFavourite } = require('./controllers/favourites.controller')
+const { postFavourite, deleteFavourite, getFavouritesByUser } = require('./controllers/favourites.controller')
 const { getBookings, postBooking, deleteBooking, patchBooking, getBookingsByUserId } = require('./controllers/bookings.controller')
 const { serveIndex } = require('./controllers/index.controller')
 
@@ -29,6 +29,8 @@ app.get('/api/reviews/:id', getSingleReview)
 app.get('/api/properties/:id/bookings', getBookings)
 
 app.get('/api/users/:id/bookings', getBookingsByUserId)
+
+app.get('/api/users/:id/favourites', getFavouritesByUser)
 
 app.post('/api/properties/:id/reviews', postReview)
 

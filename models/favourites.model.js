@@ -25,4 +25,30 @@ const removeFavourite = async (property_id, guest_id) => {
     return
 }
 
-module.exports = { insertFavourite, removeFavourite }
+const fetchFavouritesByUser = async (id) => {
+
+    const { rows } = await db.query(`
+        SELECT favourites.favourite_id, 
+        properties.name, 
+        ARRAY_AGG(DISTINCT images.image_url) as images,
+        properties.price_per_night, 
+        properties.location, 
+        properties.property_type, 
+        properties.description 
+        FROM favourites 
+        JOIN properties on favourites.property_id = properties.property_id 
+        LEFT JOIN images ON images.property_id = properties.property_id
+        WHERE guest_id = $1
+        GROUP BY 
+        favourites.favourite_id,
+        name, 
+        price_per_night,
+        location,
+        property_type,
+        description
+        `, [id])
+
+    return rows
+}
+
+module.exports = { insertFavourite, removeFavourite, fetchFavouritesByUser }
