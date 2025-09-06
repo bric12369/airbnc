@@ -47,6 +47,10 @@ const fetchFavouritesByUser = async (id) => {
         property_type,
         description
         `, [id])
+    
+    if (!rows.length) {
+        return Promise.reject({status: 200, msg: 'User currently has no favourited properties'})
+    }
 
     return rows
 }

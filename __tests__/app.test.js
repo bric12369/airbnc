@@ -748,5 +748,17 @@ describe('app', () => {
             expect(body.favourites[0].property_type).toBe('Studio')
             expect(body.favourites[0].description).toBe('Description of Seaside Studio Getaway.')
         })
+        test('returns 200 and msg when user has no favourites properties', async () => {
+            const { body } = await request(app).get('/api/users/1/favourites').expect(200)
+            expect(body.msg).toBe('User currently has no favourited properties')
+        })
+        test('returns 404 if user does not exist', async () => {
+            const { body } = await request(app).get('/api/users/1000/favourites').expect(404)
+            expect(body.msg).toBe('User not found')
+        })
+        test.only('returns 400 when user is incorrect data type', async () => {
+            const { body } = await request(app).get('/api/users/not-a-number/favourites').expect(400)
+            expect(body.msg).toBe('Bad request: invalid data type')
+        })
     })
 })

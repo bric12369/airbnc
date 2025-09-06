@@ -29,8 +29,13 @@ const deleteFavourite = async (req, res, next) => {
 
 const getFavouritesByUser = async (req, res, next) => {
     const { id } = req.params
-    const favourites = await fetchFavouritesByUser(id)
-    res.send({ favourites })
+    try {
+        await fetchUser(id)
+        const favourites = await fetchFavouritesByUser(id)
+        res.send({ favourites })
+    } catch (error) {
+        next(error)
+    }
 }
 
 module.exports = { postFavourite, deleteFavourite, getFavouritesByUser }
