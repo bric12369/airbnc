@@ -29,23 +29,23 @@ const fetchFavouritesByUser = async (id) => {
 
     const { rows } = await db.query(`
         SELECT favourites.favourite_id, 
-        properties.name, 
-        ARRAY_AGG(DISTINCT images.image_url) as images,
+        properties.name AS property_name, 
+        image.image_url AS image,
         properties.price_per_night, 
         properties.location, 
         properties.property_type, 
         properties.description 
         FROM favourites 
         JOIN properties on favourites.property_id = properties.property_id 
-        LEFT JOIN images ON images.property_id = properties.property_id
+        LEFT JOIN LATERAL (
+        SELECT image_url 
+        FROM images 
+        WHERE images.property_id = properties.property_id 
+        ORDER BY image_id
+        LIMIT 1
+        ) AS image on true
         WHERE guest_id = $1
-        GROUP BY 
-        favourites.favourite_id,
-        name, 
-        price_per_night,
-        location,
-        property_type,
-        description
+        ORDER BY favourites.favourite_id
         `, [id])
     
     if (!rows.length) {
