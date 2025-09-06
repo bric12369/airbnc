@@ -739,7 +739,6 @@ describe('app', () => {
     describe('GET /api/users/:id/favourites', () => {
         test('Returns 200 and an array of the given user\'s favouritted properties, each with the following properties: favourite_id, property_name, image, price_per_night, location, property_type and description', async () => {
             const { body } = await request(app).get('/api/users/2/favourites').expect(200)
-            console.log(body)
             expect(body.favourites.length > 0)
             expect(body.favourites[0].favourite_id).toBe(3)
             expect(body.favourites[0].property_name).toBe('Seaside Studio Getaway')
