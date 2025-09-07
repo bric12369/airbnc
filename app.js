@@ -6,8 +6,11 @@ const {getPropertyReviews, postReview, deleteReview, getReviews, getSingleReview
 const { postFavourite, deleteFavourite, getFavouritesByUser } = require('./controllers/favourites.controller')
 const { getBookings, postBooking, deleteBooking, patchBooking, getBookingsByUserId } = require('./controllers/bookings.controller')
 const { serveIndex } = require('./controllers/index.controller')
+const cors = require('cors')
 
 const app = express()
+app.use(cors())
+
 app.use(express.json())
 
 app.use(express.static(__dirname));
