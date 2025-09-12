@@ -155,6 +155,30 @@
             </div>
 
             <div class="endpoint">
+                <h3>Get Users</h3>
+                <p>GET /api/users</p>
+                <p>Responds with an array of user objects:</p>
+                <pre><code>
+    {
+    "users": [
+        {
+        "user_id": 1,
+        "first_name": "Alice",
+        "surname": "Johnson"
+        },
+        {
+        "user_id": 2,
+        "first_name": "Bob",
+        "surname": "Smith"
+        },
+        // more users...
+        ]
+    }
+
+                </code></pre>
+            </div>
+
+            <div class="endpoint">
                 <h3>Get User by ID</h3>
                 <p>GET /api/users/:id</p>
                 <p>Responds with a single user object with matching user_id:</p>
