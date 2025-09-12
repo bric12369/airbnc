@@ -21,6 +21,18 @@ const fetchUser = async (id) => {
     return rows[0]
 }
 
+const fetchAllUsers = async () => {
+    
+    const { rows } = await db.query(`
+        SELECT user_id,
+        first_name,
+        surname
+        FROM users
+        `)
+
+    return rows
+}
+
 const updateUserDetails = async (id, first_name, surname, email, phone_number, avatar) => {
     
     const possibleArgs = { first_name, surname, email, phone_number, avatar }
@@ -47,4 +59,4 @@ const updateUserDetails = async (id, first_name, surname, email, phone_number, a
     return rows[0]
 }
 
-module.exports = { fetchUser, updateUserDetails }
+module.exports = { fetchUser, fetchAllUsers, updateUserDetails }

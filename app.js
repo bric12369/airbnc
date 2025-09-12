@@ -1,7 +1,7 @@
 const express = require('express')
 const {getAllProperties, getSingleProperty} = require('./controllers/properties.controller')
 const {handleInvalidPath, handleBadRequest, handleCustomErrors} = require('./controllers/errors.controller')
-const {getUserDetails, patchUserDetails} = require('./controllers/users.controller')
+const {getUserDetails, patchUserDetails, getAllUsers} = require('./controllers/users.controller')
 const {getPropertyReviews, postReview, deleteReview, getReviews, getSingleReview} = require('./controllers/reviews.controller')
 const { postFavourite, deleteFavourite, getFavouritesByUser } = require('./controllers/favourites.controller')
 const { getBookings, postBooking, deleteBooking, patchBooking, getBookingsByUserId } = require('./controllers/bookings.controller')
@@ -18,6 +18,8 @@ app.use(express.static(__dirname));
 app.get('/', serveIndex)
 
 app.get('/api/properties', getAllProperties)
+
+app.get('/api/users', getAllUsers)
 
 app.get('/api/properties/:id', getSingleProperty)
 

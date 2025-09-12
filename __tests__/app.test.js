@@ -761,4 +761,13 @@ describe('app', () => {
             expect(body.msg).toBe('Bad request: invalid data type')
         })
     })
+
+    describe.only('GET /api/users' , () => {
+        test('Returns 200 and an array of user objects, each with user_id, first_name and surname properties', async () => {
+            const { body } = await request(app).get('/api/users').expect(200)
+            expect(body.users[0].user_id).toBe(1)
+            expect(body.users[0].first_name).toBe('Alice')
+            expect(body.users[0].surname).toBe('Johnson')
+        })
+    })
 })
