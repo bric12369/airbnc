@@ -737,10 +737,10 @@ describe('app', () => {
     })
 
     describe('GET /api/users/:id/favourites', () => {
-        test('Returns 200 and an array of the given user\'s favouritted properties, each with the following properties: favourite_id, property_name, image, price_per_night, location, property_type and description', async () => {
+        test('Returns 200 and an array of the given user\'s favouritted properties, each with the following properties: favourite_id, property_id, property_name, image, price_per_night, location, property_type and description', async () => {
             const { body } = await request(app).get('/api/users/2/favourites').expect(200)
-            expect(body.favourites.length > 0)
             expect(body.favourites[0].favourite_id).toBe(3)
+            expect(body.favourites[0].property_id).toBe(8)
             expect(body.favourites[0].property_name).toBe('Seaside Studio Getaway')
             expect(body.favourites[0].image).toBe('https://example.com/images/seaside_studio_1.jpg')
             expect(body.favourites[0].price_per_night).toBe('95')
@@ -762,7 +762,7 @@ describe('app', () => {
         })
     })
 
-    describe.only('GET /api/users' , () => {
+    describe('GET /api/users' , () => {
         test('Returns 200 and an array of user objects, each with user_id, first_name and surname properties', async () => {
             const { body } = await request(app).get('/api/users').expect(200)
             expect(body.users[0].user_id).toBe(1)

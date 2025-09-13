@@ -29,6 +29,7 @@ const fetchFavouritesByUser = async (id) => {
 
     const { rows } = await db.query(`
         SELECT favourites.favourite_id, 
+        properties.property_id AS property_id,
         properties.name AS property_name, 
         image.image_url AS image,
         properties.price_per_night, 
