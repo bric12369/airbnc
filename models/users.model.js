@@ -11,6 +11,7 @@ const fetchUser = async (id) => {
         email,
         phone_number,
         avatar,
+        is_host,
         created_at
         FROM users
         WHERE user_id = $1`, values)

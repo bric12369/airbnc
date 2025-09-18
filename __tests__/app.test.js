@@ -276,7 +276,7 @@ describe('app', () => {
         test('get request to /api/users/:id returns status 200', async () => {
             await request(app).get('/api/users/3').expect(200)
         })
-        test('get request to /api/users/:id returns single user with the following properties: user_id, first_name, surname, email, phone_number, avatar, created_at', async () => {
+        test.only('get request to /api/users/:id returns single user with the following properties: user_id, first_name, surname, email, phone_number, avatar, is_host, created_at', async () => {
             const { body } = await request(app).get('/api/users/3')
             const expected = {
                 user_id: 3,
@@ -284,7 +284,8 @@ describe('app', () => {
                 surname: 'Davis',
                 email: 'emma@example.com',
                 phone_number: '+44 7000 333333',
-                avatar: 'https://example.com/images/emma.jpg'
+                avatar: 'https://example.com/images/emma.jpg',
+                is_host: true
             }
             expect(body.user).toMatchObject(expected)
             expect(body.user.hasOwnProperty('created_at')).toBe(true)
