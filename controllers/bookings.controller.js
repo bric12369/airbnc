@@ -21,7 +21,8 @@ const postBooking = async (req, res, next) => {
     try {
         if (id) await fetchSingleProperty(id)
         if (guest_id) await fetchUser(guest_id)
-        const booking_id = await insertBooking(id, guest_id, check_in_date, check_out_date)
+        const existingBookings = await fetchBookings(id)
+        const booking_id = await insertBooking(id, guest_id, check_in_date, check_out_date, existingBookings)
         res.status(201).send({msg: 'Booking successful', booking_id})
     } catch (error) {
         next(error)

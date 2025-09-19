@@ -45,11 +45,24 @@ const fetchBookingsByUserId = async (user_id) => {
     return rows
 }
 
-const insertBooking = async (property_id, guest_id, check_in_date, check_out_date) => {
+const insertBooking = async (property_id, guest_id, new_check_in_date, new_check_out_date, existingBookings) => {
 
-    await checkValidDates(check_in_date, check_out_date)
+    await checkValidDates(new_check_in_date, new_check_out_date)
 
-    const values = [property_id, guest_id, check_in_date, check_out_date]
+    const checkInDate = new Date(new_check_in_date)
+    const checkOutDate = new Date(new_check_out_date)
+
+    if (!isNaN(checkInDate) && !isNaN(checkOutDate)) {
+        for (const booking of existingBookings) {
+            const existingCheckIn = booking.check_in_date.toISOString().split('T')[0]
+            const existingCheckOut = booking.check_out_date.toISOString().split('T')[0]
+            if (new_check_in_date < existingCheckOut && new_check_out_date > existingCheckIn) {
+                return Promise.reject({ status: 400, msg: 'Chosen dates conflict with existing bookings' })
+            }
+        }
+    }
+
+    const values = [property_id, guest_id, new_check_in_date, new_check_out_date]
 
     const { rows } = await db.query(`
         INSERT INTO bookings (property_id, guest_id, check_in_date, check_out_date)
@@ -65,7 +78,7 @@ const removeBooking = async (booking_id) => {
         DELETE FROM bookings 
         WHERE booking_id = $1
         `, [booking_id])
-    
+
     return
 }
 
@@ -75,15 +88,15 @@ const checkBookingById = async (booking_id) => {
         SELECT * FROM bookings
         WHERE booking_id = $1
         `, [booking_id])
-    
+
     if (!bookings.length) {
-        return Promise.reject({status: 404, msg: 'Booking not found'})
+        return Promise.reject({ status: 404, msg: 'Booking not found' })
     }
 
     return bookings[0]
 }
 
-const updateBooking = async (booking_id, check_in_date, check_out_date) =>{
+const updateBooking = async (booking_id, check_in_date, check_out_date) => {
 
     await checkValidDates(check_in_date, check_out_date)
 
@@ -105,12 +118,12 @@ const updateBooking = async (booking_id, check_in_date, check_out_date) =>{
         WHERE booking_id = $1
         RETURNING *
         `, values)
-    
+
     return rows[0]
 }
 
 const checkValidDates = (check_in_date, check_out_date) => {
-    
+
     const today = new Date()
     const checkIn = new Date(check_in_date)
     const checkOut = new Date(check_out_date)
@@ -119,7 +132,7 @@ const checkValidDates = (check_in_date, check_out_date) => {
         return Promise.reject({ status: 400, msg: 'Bad request: check in/check out cannot be in the past' })
     }
     if (checkIn > checkOut) {
-        return Promise.reject({ status: 400, msg: 'Bad request: check out must be after check in' })        
+        return Promise.reject({ status: 400, msg: 'Bad request: check out must be after check in' })
     }
 }
 

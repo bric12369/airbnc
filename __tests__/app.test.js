@@ -276,7 +276,7 @@ describe('app', () => {
         test('get request to /api/users/:id returns status 200', async () => {
             await request(app).get('/api/users/3').expect(200)
         })
-        test.only('get request to /api/users/:id returns single user with the following properties: user_id, first_name, surname, email, phone_number, avatar, is_host, created_at', async () => {
+        test('get request to /api/users/:id returns single user with the following properties: user_id, first_name, surname, email, phone_number, avatar, is_host, created_at', async () => {
             const { body } = await request(app).get('/api/users/3')
             const expected = {
                 user_id: 3,
@@ -552,7 +552,7 @@ describe('app', () => {
             const { body } = await request(app).post('/api/properties/1/bookings').send({
                 'guest_id': 1,
                 'check_in_date': '2025-11-11',
-                'check_out_date': '2025-12-12'
+                'check_out_date': '2025-11-12'
             }).expect(201)
             expect(body.booking_id).toBe(11)
             expect(body.msg).toBe('Booking successful')
@@ -599,8 +599,8 @@ describe('app', () => {
         })
         test('returns 400 when payload missing a not null variable', async () => {
             const { body } = await request(app).post('/api/properties/1/bookings').send({
-                'check_in_date': '2025-11-11',
-                'check_out_date': '2025-12-12'
+                'check_in_date': '2025-12-12',
+                'check_out_date': '2025-12-13'
             }).expect(400)
             expect(body.msg).toBe('Bad request: Please provide all required values')
             const { body: body2 } = await request(app).post('/api/properties/1/bookings').send({
@@ -630,6 +630,14 @@ describe('app', () => {
                 'check_out_date': '2025-12-12'
             }).expect(400)
             expect(body.msg).toBe('Bad request: invalid date provided')
+        })
+        test('returns 400 when an existing booking conflicts with chosen dates', async () => {
+            const { body } = await request(app).post('/api/properties/1/bookings').send({
+                'guest_id': 1,
+                'check_in_date': '2025-12-02',
+                'check_out_date': '2025-12-07'
+            }).expect(400)
+            expect(body.msg).toBe('Chosen dates conflict with existing bookings')
         })
     })
 
